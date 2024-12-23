@@ -1,8 +1,9 @@
 import React, { useState, ReactNode } from "react";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme, Input } from "antd";
 import Image from "next/image";
 import { UserOutlined, TeamOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
+const { Search } = Input;
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -79,6 +80,7 @@ const App: React.FC<Props> = ({ children }) => {
           height: "100vh", // Ensures the sidebar takes full height
           zIndex: 1, // Makes sure the sidebar is always above content
         }}
+        collapsedWidth={100}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -99,13 +101,20 @@ const App: React.FC<Props> = ({ children }) => {
       <Layout>
         <Header
           style={{
-            padding: 0,
+            padding: "20px 50px 20px 50px",
             background: colorBgContainer,
             position: "sticky",
+            textAlign: "center",
             top: 0,
             zIndex: 1,
           }}
-        />
+        >
+          <Search
+            placeholder="input search text"
+            style={{ width: 700 }}
+            enterButton
+          />
+        </Header>
         <Content style={{ margin: "10px 16px" }}>
           <div
             style={{
