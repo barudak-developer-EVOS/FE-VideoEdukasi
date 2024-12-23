@@ -1,17 +1,16 @@
 import React, { useState, ReactNode } from "react";
-import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import Image from "next/image";
+import { UserOutlined, TeamOutlined } from "@ant-design/icons";
+import type { MenuProps } from "antd";
+
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
+
+interface Props {
+  children: ReactNode;
+}
 
 function getItem(
   label: React.ReactNode,
@@ -26,34 +25,60 @@ function getItem(
     label,
   } as MenuItem;
 }
-interface Props {
-  children: ReactNode;
-}
 
-const items: MenuItem[] = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+const MENUS = [
+  {
+    key: "sub1",
+    label: "STUDI",
+    icon: UserOutlined,
+    children: [
+      { key: "1", label: "SD" },
+      { key: "2", label: "SMP" },
+      { key: "3", label: "SMA" },
+    ],
+  },
+  {
+    key: "sub2",
+    label: "MAPEL",
+    icon: TeamOutlined,
+    children: [
+      { key: "4", label: "MAPEL A" },
+      { key: "5", label: "MAPEL B" },
+    ],
+  },
+  {
+    key: "sub3",
+    label: "SUBMAPEL",
+    icon: TeamOutlined,
+    children: [
+      { key: "6", label: "SUBMAPEL A" },
+      { key: "7", label: "SUBMAPEL B" },
+    ],
+  },
 ];
 
 const App: React.FC<Props> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [activeMenus, setActiveMenus] = useState<number>(1); // Melacak jumlah menu yang aktif
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const handleMenuClick = (key: string) => {
+    if (activeMenus < MENUS.length) {
+      setActiveMenus((prev) => prev + 1); // Aktifkan menu berikutnya
+    }
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
+        style={{
+          position: "sticky",
+          top: 0, // Makes the sidebar stick to the top
+          height: "100vh", // Ensures the sidebar takes full height
+          zIndex: 1, // Makes sure the sidebar is always above content
+        }}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -63,18 +88,25 @@ const App: React.FC<Props> = ({ children }) => {
         </div>
         <Menu
           theme="dark"
-          defaultSelectedKeys={["1"]}
           mode="inline"
-          items={items}
+          onClick={(e) => handleMenuClick(e.key)}
+          items={MENUS.slice(0, activeMenus).map((menuItem) => ({
+            ...menuItem,
+            icon: React.createElement(menuItem.icon),
+          }))}
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+          }}
+        />
+        <Content style={{ margin: "10px 16px" }}>
           <div
             style={{
               padding: 24,
