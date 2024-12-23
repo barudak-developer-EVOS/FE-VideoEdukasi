@@ -34,13 +34,13 @@ const Login = () => {
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <Image src="/favicon.ico" alt="icon" width={50} height={50} />
-          <Title level={3}>Welcome back to EduVid!</Title>
-          <Text type="secondary">
-            Please enter your details below to sign in.
-          </Text>
-        </div>
+      <div style={{ textAlign: "center", marginBottom: 24, marginTop: 16 }}>
+        <Image src="/logo.png" alt="icon" width={90} height={90} />
+        <Title level={3}>Welcome back to EduVid!</Title>
+        <Text type="secondary">
+          Please enter your details below to sign in.
+        </Text>
+      </div>
         <Form
           name="basic"
           initialValues={{ remember: true }}
