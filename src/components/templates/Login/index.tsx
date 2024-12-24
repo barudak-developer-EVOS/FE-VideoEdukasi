@@ -35,11 +35,8 @@ const Login = () => {
         }}
       >
       <div style={{ textAlign: "center", marginBottom: 24, marginTop: 16 }}>
-        <Image src="/logo.png" alt="icon" width={90} height={90} />
-        <Title level={3}>Welcome back to EduVid!</Title>
-        <Text type="secondary">
-          Please enter your details below to sign in.
-        </Text>
+        <Image src="/eduVidlogo.png" alt="icon" width={90} height={90} />
+        <Title level={3}>Welcome to EduVid!</Title>
       </div>
         <Form
           name="basic"

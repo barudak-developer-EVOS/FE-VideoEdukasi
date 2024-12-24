@@ -1,53 +1,97 @@
-import React, { ReactNode } from "react";
-import { Layout } from "antd";
+import React, { useState, ReactNode } from "react";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Breadcrumb, Layout, Menu, theme } from "antd";
+import Image from "next/image";
+const { Header, Content, Footer, Sider } = Layout;
 
-const { Header, Footer, Sider, Content } = Layout;
+type MenuItem = Required<MenuProps>["items"][number];
 
-const headerStyle: React.CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: 64,
-  paddingInline: 48,
-  lineHeight: "64px",
-  backgroundColor: "#4096ff",
-};
-
-const contentStyle: React.CSSProperties = {
-  textAlign: "center",
-  minHeight: 120,
-  lineHeight: "120px",
-  color: "#fff",
-  backgroundColor: "#0958d9",
-};
-
-const siderStyle: React.CSSProperties = {
-  textAlign: "center",
-  lineHeight: "120px",
-  color: "#fff",
-  backgroundColor: "#1677ff",
-};
-
-const footerStyle: React.CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  backgroundColor: "#4096ff",
-};
-
-const layoutStyle = {
-  borderRadius: 8,
-  overflow: "hidden",
-  width: "calc(50% - 8px)",
-  maxWidth: "calc(50% - 8px)",
-};
+function getItem(
+  label: React.ReactNode,
+  key: React.Key,
+  icon?: React.ReactNode,
+  children?: MenuItem[]
+): MenuItem {
+  return {
+    key,
+    icon,
+    children,
+    label,
+  } as MenuItem;
+}
 interface Props {
   children: ReactNode;
 }
-const App: React.FC<Props> = ({ children }) => (
-  <Layout style={layoutStyle}>
-    <Header style={headerStyle}>Header</Header>
-    <Content style={contentStyle}>{children}</Content>
-    <Footer style={footerStyle}>Footer</Footer>
-  </Layout>
-);
+
+const items: MenuItem[] = [
+  getItem("Option 1", "1", <PieChartOutlined />),
+  getItem("Option 2", "2", <DesktopOutlined />),
+  getItem("User", "sub1", <UserOutlined />, [
+    getItem("Tom", "3"),
+    getItem("Bill", "4"),
+    getItem("Alex", "5"),
+  ]),
+  getItem("Team", "sub2", <TeamOutlined />, [
+    getItem("Team 1", "6"),
+    getItem("Team 2", "8"),
+  ]),
+  getItem("Files", "9", <FileOutlined />),
+];
+
+const App: React.FC<Props> = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
+  return (
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
+        <div className="" style={{ textAlign: "center" }}>
+          <Image src="/eduvidLogo.png" alt="Logo" width={100} height={100} />
+        </div>
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+        />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Content style={{ margin: "0 16px" }}>
+          <Breadcrumb style={{ margin: "16px 0" }}>
+            <Breadcrumb.Item>User</Breadcrumb.Item>
+            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {children}
+          </div>
+        </Content>
+        <Footer style={{ textAlign: "center" }}>
+          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+        </Footer>
+      </Layout>
+    </Layout>
+  );
+};
 
 export default App;
