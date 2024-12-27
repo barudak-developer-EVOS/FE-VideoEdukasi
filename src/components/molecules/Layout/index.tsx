@@ -69,6 +69,7 @@ const App: React.FC<Props> = ({ children }) => {
     {
       key: "2",
       label: "Settings",
+      onClick: () => router.push("/user-settings"),
     },
   ];
 
