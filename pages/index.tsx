@@ -1,10 +1,12 @@
+import dynamic from "next/dynamic";
 
-
-
-export default function Home() {
-  return (
-    <>
-      <h1>Hello world</h1>
-    </>
-  )
-}
+const Component = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "login-page" */ "../src/components/templates/Dashboard/index"
+    ),
+  {
+    ssr: false,
+  }
+);
+export default Component;
