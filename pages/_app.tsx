@@ -6,7 +6,11 @@ import { useRouter } from "next/router";
 import Link from "next/link"; // Tambahkan impor untuk Link
 import "../src/styles/globals.css";
 
+
 const IGNORED_LAYOUT = ["/login"];
+
+
+const IGNORED_LAYOUT = ["/login" , "/createAccount"];
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
