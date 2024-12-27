@@ -1,5 +1,5 @@
 import React, { useState, ReactNode } from "react";
-import { Layout, Menu, theme, Input } from "antd";
+import { Layout, Menu, theme, Input, Dropdown, Avatar, Button } from "antd";
 import Image from "next/image";
 import { UserOutlined, TeamOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -59,6 +59,17 @@ const MENUS = [
 ];
 
 const App: React.FC<Props> = ({ children }) => {
+  const menuItems = [
+    {
+      key: "1",
+      label: "Profile",
+    },
+    {
+      key: "2",
+      label: "Settings",
+    },
+  ];
+
   const [collapsed, setCollapsed] = useState(false);
   const [activeMenus, setActiveMenus] = useState<number>(1); // Melacak jumlah menu yang aktif
   const {
@@ -101,7 +112,7 @@ const App: React.FC<Props> = ({ children }) => {
       <Layout>
         <Header
           style={{
-            padding: "20px 50px 20px 50px",
+            padding: "10px 50px 10px 0",
             background: colorBgContainer,
             position: "sticky",
             textAlign: "center",
@@ -109,12 +120,53 @@ const App: React.FC<Props> = ({ children }) => {
             zIndex: 1,
           }}
         >
-          <Search
-            placeholder="input search text"
-            style={{ width: 700 }}
-            enterButton
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between", // Membagi elemen ke kiri, tengah, dan kanan
+              margin: "0 auto", // Memusatkan container
+            }}
+          >
+            {/* Kontainer untuk memusatkan Search */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Search
+                placeholder="input search text"
+                style={{ width: 900 }}
+                enterButton
+              />
+            </div>
+            {/* Kontainer untuk Button dan Dropdown */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Button style={{ marginRight: "10px" }}>+ Buat</Button>
+              <Dropdown
+                menu={{ items: menuItems }}
+                trigger={["click"]}
+                placement="bottomRight"
+              >
+                <Avatar
+                  style={{
+                    cursor: "pointer",
+                  }}
+                  size="large"
+                  icon={<UserOutlined />}
+                />
+              </Dropdown>
+            </div>
+          </div>
         </Header>
+
         <Content style={{ margin: "10px 16px" }}>
           <div
             style={{
