@@ -4,6 +4,7 @@ import Image from "next/image";
 import { UserOutlined, TeamOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 const { Search } = Input;
+import { useRouter } from "next/router";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -59,6 +60,7 @@ const MENUS = [
 ];
 
 const App: React.FC<Props> = ({ children }) => {
+  const router = useRouter();
   const menuItems = [
     {
       key: "1",
@@ -149,7 +151,14 @@ const App: React.FC<Props> = ({ children }) => {
                 alignItems: "center",
               }}
             >
-              <Button style={{ marginRight: "10px" }}>+ Buat</Button>
+              <Button
+                style={{ marginRight: "10px" }}
+                onClick={() => {
+                  router.push("/manage");
+                }}
+              >
+                + Buat
+              </Button>
               <Dropdown
                 menu={{ items: menuItems }}
                 trigger={["click"]}
