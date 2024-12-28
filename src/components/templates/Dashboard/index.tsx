@@ -1,15 +1,11 @@
-import React from "react";
-import { Card, Flex, Button, Avatar } from "antd";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-  PlayCircleFilled,
-} from "@ant-design/icons";
-
+import React, { useState } from "react";
+import { Card, Input, Avatar } from "antd";
+import { PlayCircleFilled } from "@ant-design/icons";
 import { Image } from "antd";
-const { Meta } = Card;
 import { useRouter } from "next/router";
+
+const { Meta } = Card;
+const { Search } = Input;
 
 const VideoList = () => {
   const router = useRouter();
@@ -90,29 +86,44 @@ const VideoList = () => {
     },
   ];
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredVideos, setFilteredVideos] = useState(videoData);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    const filtered = videoData.filter((video) =>
+      video.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredVideos(filtered);
+  };
+
   return (
     <div>
-      <Flex
-        wrap
-        gap="middle"
-        justify={"start"}
-        style={{ alignItems: "stretch" }}
-      >
-        {videoData.map((video) => (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Search
+          placeholder="Search video title"
+          allowClear
+          enterButton="Search"
+          size="large"
+          onSearch={handleSearch}
+          style={{ marginBottom: "20px", maxWidth: "800px" }}
+        />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+        {filteredVideos.map((video) => (
           <Card
             bordered={false}
             key={video.id}
             hoverable
             style={{ width: 300, boxShadow: "none" }}
+            onClick={() => router.push("/video/" + video.id)}
             cover={
               <Image
-                onClick={() => router.push(video.videoUrl)}
+                onClick={() => router.push("/video/" + video.id)}
                 preview={{
                   mask: (
                     <span style={{ fontSize: 16, fontWeight: 600 }}>
-                      <PlayCircleFilled />
-                      {""}
-                      Tonton
+                      <PlayCircleFilled /> Tonton
                     </span>
                   ),
                 }}
@@ -140,7 +151,7 @@ const VideoList = () => {
             />
           </Card>
         ))}
-      </Flex>
+      </div>
     </div>
   );
 };

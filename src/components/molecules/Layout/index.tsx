@@ -1,197 +1,103 @@
-import React, { useState, ReactNode } from "react";
-import { Layout, Menu, theme, Input, Dropdown, Avatar, Button } from "antd";
+import React, { useState } from "react";
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import { Button, Layout, Menu, theme } from "antd";
 import Image from "next/image";
-import { UserOutlined, TeamOutlined } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-const { Search } = Input;
 import { useRouter } from "next/router";
 
-const { Header, Content, Footer, Sider } = Layout;
-
-type MenuItem = Required<MenuProps>["items"][number];
-
-interface Props {
-  children: ReactNode;
-}
-
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
+const { Header, Sider, Content } = Layout;
 
 const MENUS = [
   {
-    key: "sub1",
+    key: "1",
+    icon: <UserOutlined />,
     label: "STUDI",
-    icon: UserOutlined,
     children: [
-      { key: "1", label: "SD" },
-      { key: "2", label: "SMP" },
-      { key: "3", label: "SMA" },
+      { key: "1-1", label: "SD" },
+      { key: "1-2", label: "SMP" },
+      { key: "1-3", label: "SMA" },
     ],
   },
   {
-    key: "sub2",
+    key: "2",
+    icon: <VideoCameraOutlined />,
     label: "MAPEL",
-    icon: TeamOutlined,
     children: [
-      { key: "4", label: "MAPEL A" },
-      { key: "5", label: "MAPEL B" },
-    ],
-  },
-  {
-    key: "sub3",
-    label: "SUBMAPEL",
-    icon: TeamOutlined,
-    children: [
-      { key: "6", label: "SUBMAPEL A" },
-      { key: "7", label: "SUBMAPEL B" },
+      { key: "2-1", label: "MAPEL A" },
+      { key: "2-2", label: "MAPEL B" },
     ],
   },
 ];
 
+interface Props {
+  children: React.ReactNode;
+}
 const App: React.FC<Props> = ({ children }) => {
-  const router = useRouter();
-  const menuItems = [
-    {
-      key: "1",
-      label: "Profile",
-    },
-    {
-      key: "2",
-      label: "Settings",
-      onClick: () => router.push("/user-settings"),
-    },
-  ];
-
   const [collapsed, setCollapsed] = useState(false);
-  const [activeMenus, setActiveMenus] = useState<number>(1); // Melacak jumlah menu yang aktif
+  const [searchTerm, setSearchTerm] = useState("");
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
-  const handleMenuClick = (key: string) => {
-    if (activeMenus < MENUS.length) {
-      setActiveMenus((prev) => prev + 1); // Aktifkan menu berikutnya
-    }
-  };
+  const router = useRouter();
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        style={{
-          position: "sticky",
-          top: 0, // Makes the sidebar stick to the top
-          height: "100vh", // Ensures the sidebar takes full height
-          zIndex: 1, // Makes sure the sidebar is always above content
-        }}
-        collapsedWidth={100}
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="" style={{ textAlign: "center" }}>
-          <Image src="/eduvidLogo.png" alt="Logo" width={100} height={100} />
+    <Layout style={{ height: "100%" }}>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div style={{ textAlign: "center", padding: "16px 0" }}>
+          <Image src="/eduvidLogo.png" alt="Logo" width={80} height={80} />
         </div>
         <Menu
           theme="dark"
           mode="inline"
-          onClick={(e) => handleMenuClick(e.key)}
-          items={MENUS.slice(0, activeMenus).map((menuItem) => ({
-            ...menuItem,
-            icon: React.createElement(menuItem.icon),
+          defaultSelectedKeys={["1"]}
+          items={MENUS.map((menu) => ({
+            key: menu.key,
+            icon: menu.icon,
+            label: menu.label,
+            children: menu.children?.map((child) => ({
+              key: child.key,
+              label: child.label,
+            })),
           }))}
         />
       </Sider>
       <Layout>
-        <Header
-          style={{
-            padding: "10px 50px 10px 0",
-            background: colorBgContainer,
-            position: "sticky",
-            textAlign: "center",
-            top: 0,
-            zIndex: 1,
-          }}
-        >
+        <Header style={{ padding: 0, background: colorBgContainer }}>
           <div
             style={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              justifyContent: "space-between", // Membagi elemen ke kiri, tengah, dan kanan
-              margin: "0 auto", // Memusatkan container
+              padding: "0 16px",
             }}
           >
-            {/* Kontainer untuk memusatkan Search */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Search
-                placeholder="input search text"
-                style={{ width: 900 }}
-                enterButton
-              />
-            </div>
-            {/* Kontainer untuk Button dan Dropdown */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Button
-                style={{ marginRight: "10px" }}
-                onClick={() => {
-                  router.push("/manage");
-                }}
-              >
-                + Buat
-              </Button>
-              <Dropdown
-                menu={{ items: menuItems }}
-                trigger={["click"]}
-                placement="bottomRight"
-              >
-                <Avatar
-                  style={{
-                    cursor: "pointer",
-                  }}
-                  size="large"
-                  icon={<UserOutlined />}
-                />
-              </Dropdown>
-            </div>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ fontSize: "16px", width: 64, height: 64 }}
+            />
+            <h2>VIDEO EDUKASI ONLINE</h2>
+            <Button type="primary" onClick={() => router.push("/manage")}>
+              + Buat
+            </Button>
           </div>
         </Header>
-
-        <Content style={{ margin: "10px 16px" }}>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {children}
-          </div>
+        <Content
+          style={{
+            padding: 24,
+            minHeight: 280,
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          {children}
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
       </Layout>
     </Layout>
   );
