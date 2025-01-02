@@ -2,10 +2,12 @@ import React from 'react';
 import { Form, Input, Button, Checkbox, Typography } from 'antd';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+
 const { Title, Text } = Typography;
 
 const Login = () => {
   const router = useRouter();
+
   const onFinish = (values: any) => {
     console.log('Success:', values);
     router.push('/');
@@ -13,6 +15,10 @@ const Login = () => {
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
+  };
+
+  const handleSignUp = () => {
+    router.push('/signup'); // Arahkan ke halaman pendaftaran
   };
 
   return (
@@ -52,11 +58,18 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" onClick={onFinish} block>
+            <Button type="primary" htmlType="submit" block>
               Log in
             </Button>
           </Form.Item>
         </Form>
+
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <span>Don't have an account?</span>
+          <Button type="link" onClick={() => router.push('../createAccount')}>
+            Sign up
+          </Button>
+        </div>
       </div>
     </div>
   );
