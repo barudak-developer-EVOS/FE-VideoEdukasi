@@ -64,7 +64,11 @@ const VideoContent = () => {
               </Text>
             </Space>
           ))}
-          <TextArea rows={3} placeholder="Tambahkan komentar Anda..." />
+          <TextArea
+            rows={3}
+            placeholder="Tambahkan komentar Anda..."
+            style={{ resize: "none" }}
+          />
           <Button type="primary">Kirim</Button>
         </Space>
       </Card>
