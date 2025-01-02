@@ -65,7 +65,7 @@ const Login = () => {
         </Form>
 
         <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Text>Don't have an account? </Text>
+          <span>Don't have an account?</span>
           <Button type="link" onClick={() => router.push('../createAccount')}>
             Sign up
           </Button>

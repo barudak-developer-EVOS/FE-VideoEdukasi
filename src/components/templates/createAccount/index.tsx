@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Select, Typography, message } from 'antd';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -6,13 +6,33 @@ import { useRouter } from 'next/router';
 const { Title } = Typography;
 const { Option } = Select;
 
+// Simulasi daftar pengguna yang sudah ada
+const existingUsers = [{ email: 'student@example.com' }, { email: 'tutor@example.com' }];
+
 const CreateAccount = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const onFinish = (values: any) => {
-    console.log('Success:', values);
-    message.success('Account created successfully!');
-    router.push('/');
+    setLoading(true);
+
+    // Periksa apakah email sudah digunakan
+    const userExists = existingUsers.some((user) => user.email === values.email);
+
+    if (userExists) {
+      message.warning('Account already exists. Redirecting to login...');
+      setTimeout(() => {
+        router.push('/login'); // Redirect ke halaman login
+      }, 2000);
+    } else {
+      console.log('Success:', values);
+      message.success('Account created successfully!');
+      setTimeout(() => {
+        router.push('/'); // Redirect ke halaman utama
+      }, 2000);
+    }
+
+    setLoading(false);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -85,11 +105,17 @@ const CreateAccount = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button type="primary" htmlType="submit" block loading={loading}>
               Create Account
             </Button>
           </Form.Item>
         </Form>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <span>Already have an account?</span>
+          <Button type="link" onClick={() => router.push('/login')}>
+            Log in
+          </Button>
+        </div>
       </div>
     </div>
   );
