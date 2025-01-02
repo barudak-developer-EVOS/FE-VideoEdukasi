@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 const Component = dynamic(
   () =>
     import(
-      /* webpackChunkName: "createAccount-page" */ "../src/components/templates/CreateAccount/index"
+      /* webpackChunkName: "login-page" */ "@/components/templates/Video/index"
     ),
   {
     ssr: false,
