@@ -6,13 +6,13 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu, theme, Dropdown, Avatar } from "antd";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const { Header, Sider, Content } = Layout;
 
-const MENUS = [
+const MENUS1 = [
   {
     key: "1",
     icon: <UserOutlined />,
@@ -23,13 +23,30 @@ const MENUS = [
       { key: "1-3", label: "SMA" },
     ],
   },
+];
+
+const MENUS2 = [
   {
     key: "2",
-    icon: <VideoCameraOutlined />,
+    icon: <UserOutlined />,
     label: "MAPEL",
     children: [
-      { key: "2-1", label: "MAPEL A" },
-      { key: "2-2", label: "MAPEL B" },
+      { key: "2-1", label: "MAPEL SD" },
+      { key: "2-2", label: "MAPEL SMP" },
+      { key: "2-3", label: "MAPEL SMA" },
+    ],
+  },
+];
+
+const MENUS3 = [
+  {
+    key: "3",
+    icon: <UserOutlined />,
+    label: "SUBMAPEL",
+    children: [
+      { key: "3-1", label: "SUBMAPEL SD" },
+      { key: "3-2", label: "SUBMAPEL SMP" },
+      { key: "3-3", label: "SUBMAPEL SMA" },
     ],
   },
 ];
@@ -38,15 +55,32 @@ interface Props {
   children: React.ReactNode;
 }
 const App: React.FC<Props> = ({ children }) => {
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const menuItems = [
+    {
+      key: "1",
+      label: "Profile",
+      onClick: () => {
+        router.push("/user-settings");
+      },
+    },
+    {
+      key: "3",
+      label: "Logout",
+      onClick: () => {
+        router.push("/login");
+      },
+    },
+  ];
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const router = useRouter();
 
   return (
-    <Layout style={{ height: "100%" }}>
+    <Layout style={{ height: "100%", minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div style={{ textAlign: "center", padding: "16px 0" }}>
           <Image src="/eduvidLogo.png" alt="Logo" width={80} height={80} />
@@ -55,7 +89,35 @@ const App: React.FC<Props> = ({ children }) => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          items={MENUS.map((menu) => ({
+          items={MENUS1.map((menu) => ({
+            key: menu.key,
+            icon: menu.icon,
+            label: menu.label,
+            children: menu.children?.map((child) => ({
+              key: child.key,
+              label: child.label,
+            })),
+          }))}
+        />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          items={MENUS2.map((menu) => ({
+            key: menu.key,
+            icon: menu.icon,
+            label: menu.label,
+            children: menu.children?.map((child) => ({
+              key: child.key,
+              label: child.label,
+            })),
+          }))}
+        />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          items={MENUS3.map((menu) => ({
             key: menu.key,
             icon: menu.icon,
             label: menu.label,
@@ -83,9 +145,26 @@ const App: React.FC<Props> = ({ children }) => {
               style={{ fontSize: "16px", width: 64, height: 64 }}
             />
             <h2>VIDEO EDUKASI ONLINE</h2>
-            <Button type="primary" onClick={() => router.push("/manage")}>
-              + Buat
-            </Button>
+            <div>
+              <Button
+                type="primary"
+                style={{ marginRight: 16 }}
+                onClick={() => router.push("/manage")}
+              >
+                + Buat
+              </Button>
+              <Dropdown
+                menu={{ items: menuItems }}
+                trigger={["click"]}
+                placement="bottomRight"
+              >
+                <Avatar
+                  style={{ cursor: "pointer" }}
+                  size="large"
+                  icon={<UserOutlined />}
+                />
+              </Dropdown>
+            </div>
           </div>
         </Header>
         <Content

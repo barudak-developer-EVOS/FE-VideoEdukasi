@@ -11,7 +11,6 @@ const IGNORED_LAYOUT = ["/login", "/createAccount"];
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const withLayout = !IGNORED_LAYOUT.includes(router.pathname);
-
   return (
     <>
       {withLayout ? (
