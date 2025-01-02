@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Card, Input, Avatar } from "antd";
-import { PlayCircleFilled } from "@ant-design/icons";
+import {
+  PlayCircleFilled,
+  EditOutlined,
+  EllipsisOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { Image } from "antd";
 import { useRouter } from "next/router";
 
@@ -9,7 +14,10 @@ const { Search } = Input;
 
 const VideoList = () => {
   const router = useRouter();
-
+  const actions: React.ReactNode[] = [
+    <EditOutlined key="edit" />,
+    <DeleteOutlined key="setting" />,
+  ];
   // Dummy data for videos
   const videoData = [
     {
@@ -225,6 +233,7 @@ const VideoList = () => {
             hoverable
             style={{ width: 300, boxShadow: "none" }}
             onClick={() => router.push("/video/" + video.id)}
+            // actions={actions}
             cover={
               <Image
                 onClick={() => router.push("/video/" + video.id)}
