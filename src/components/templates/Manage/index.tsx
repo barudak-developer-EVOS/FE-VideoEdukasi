@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import { Form, Input, Upload, Button, Card, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
 const { TextArea } = Input;
-
 const VideoUploadForm = () => {
   const [form] = Form.useForm();
-  const [videoPreview, setVideoPreview] = useState(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [videoPreview, setVideoPreview] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
 
-  const handleFinish = (values) => {
+  const handleFinish = (values: any) => {
     console.log("Form Values:", values);
     console.log("Thumbnail Preview:", thumbnailPreview);
   };
 
-  const handleVideoPreview = (file) => {
+  const handleVideoPreview = (file: any) => {
     const url = URL.createObjectURL(file);
     setVideoPreview(url);
     return false; // Prevent automatic upload
   };
 
-  const handleThumbnailUpload = (file) => {
+  const handleThumbnailUpload = (file: any) => {
     const url = URL.createObjectURL(file);
     setThumbnailPreview(url);
     return false; // Prevent automatic upload
@@ -83,13 +83,13 @@ const VideoUploadForm = () => {
               </Upload>
             </Form.Item>
             {thumbnailPreview && (
-              <img
+              <Image
                 src={thumbnailPreview}
                 alt="Thumbnail Preview"
+                width={200}
+                height={120}
                 style={{
                   marginTop: 10,
-                  width: "100%",
-                  height: 120,
                   objectFit: "cover",
                   border: "1px solid #ccc",
                 }}

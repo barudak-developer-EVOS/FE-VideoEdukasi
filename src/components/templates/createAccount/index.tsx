@@ -3,55 +3,51 @@ import {
   Form,
   Input,
   Button,
-  Select,
+  Select as AntdSelect,
   Typography,
   message,
-  Select as AntdSelect,
 } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-type FieldType = {
-  username: string;
-  email?: string;
-  password?: string;
-};
-
-// Simulasi daftar pengguna yang sudah ada
 const existingUsers = [
   { email: "student@example.com" },
   { email: "tutor@example.com" },
 ];
 
-const onFinish = (values: any) => {
+const { Title } = Typography;
+
+const Index = () => {
   const [loading, setLoading] = useState(false);
-  setLoading(true);
-  // Periksa apakah email sudah digunakan
-  const userExists = existingUsers.some((user) => user.email === values.email);
+  const router = useRouter(); // Pindahkan useRouter ke sini
 
-  if (userExists) {
-    message.warning("Account already exists. Redirecting to login...");
-    setTimeout(() => {
-      router.push("/login"); // Redirect ke halaman login
-    }, 2000);
-  } else {
-    console.log("Success:", values);
-    message.success("Account created successfully!");
-    setTimeout(() => {
-      router.push("/"); // Redirect ke halaman utama
-    }, 2000);
-  }
+  const onFinish = (values: any) => {
+    setLoading(true);
+    // Periksa apakah email sudah digunakan
+    const userExists = existingUsers.some(
+      (user) => user.email === values.email
+    );
 
-  setLoading(false);
-};
+    if (userExists) {
+      message.warning("Account already exists. Redirecting to login...");
+      setTimeout(() => {
+        router.push("/login"); // Redirect ke halaman login
+      }, 2000);
+    } else {
+      console.log("Success:", values);
+      message.success("Account created successfully!");
+      setTimeout(() => {
+        router.push("/"); // Redirect ke halaman utama
+      }, 2000);
+    }
+    setLoading(false);
+  };
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
-  message.error("Failed to create account. Please check the form.");
-};
-const { Title, Text } = Typography;
-const index = () => {
-  const router = useRouter();
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+    message.error("Failed to create account. Please check the form.");
+  };
+
   return (
     <div
       style={{
@@ -73,7 +69,7 @@ const index = () => {
       >
         <div style={{ textAlign: "center", marginBottom: 24, marginTop: 16 }}>
           <Image src="/eduVidlogo.png" alt="icon" width={90} height={90} />
-          <Title type>Create a New Account</Title>
+          <Title>Create a New Account</Title>
         </div>
         <Form
           name="createAccount"
@@ -98,10 +94,7 @@ const index = () => {
             name="email"
             rules={[
               { required: true, message: "Please input your email!" },
-              {
-                type: "email",
-                message: "Please enter a valid email address!",
-              },
+              { type: "email", message: "Please enter a valid email address!" },
             ]}
           >
             <Input placeholder="Email" />
@@ -130,7 +123,7 @@ const index = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button type="primary" htmlType="submit" block loading={loading}>
               Create Account
             </Button>
           </Form.Item>
@@ -146,4 +139,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

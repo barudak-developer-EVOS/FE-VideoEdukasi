@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Input, Avatar } from "antd";
 import {
   PlayCircleFilled,
   EditOutlined,
-  EllipsisOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import { Image } from "antd";
@@ -11,8 +10,12 @@ import { useRouter } from "next/router";
 
 const { Meta } = Card;
 const { Search } = Input;
-
-const VideoList = () => {
+interface VideoListProps {
+  studi: string | null;
+  mapel: string | null;
+}
+const VideoList: React.FC<VideoListProps> = ({ studi, mapel }) => {
+  console.log(studi);
   const router = useRouter();
   const actions: React.ReactNode[] = [
     <EditOutlined key="edit" />,
@@ -24,6 +27,8 @@ const VideoList = () => {
       id: 1,
       title: "Europe Street Beat",
       accountName: "Instagram Official",
+      studi: "SD",
+      mapel: "Bahasa Indonesia",
       views: 1000,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -33,6 +38,8 @@ const VideoList = () => {
       id: 2,
       title: "Ocean Waves Relaxation",
       accountName: "Ocean Waves Channel",
+      studi: "SMP",
+      mapel: "IPA",
       views: 2000,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -42,6 +49,8 @@ const VideoList = () => {
       id: 3,
       title: "Mountain Adventures",
       accountName: "Adventure Seekers",
+      studi: "SMA",
+      mapel: "Geografi",
       views: 1500,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -51,6 +60,8 @@ const VideoList = () => {
       id: 4,
       title: "Cityscape Views",
       accountName: "City Lovers",
+      studi: "SMA",
+      mapel: "IPS",
       views: 3000,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -60,6 +71,8 @@ const VideoList = () => {
       id: 5,
       title: "Wilderness Exploration",
       accountName: "Nature Explorers",
+      studi: "SMP",
+      mapel: "IPA",
       views: 2200,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -69,6 +82,8 @@ const VideoList = () => {
       id: 6,
       title: "Underwater Wonders",
       accountName: "Aquatic Life",
+      studi: "SD",
+      mapel: "IPA",
       views: 2500,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -78,6 +93,8 @@ const VideoList = () => {
       id: 7,
       title: "Sunset Serenity",
       accountName: "Calm Vibes",
+      studi: "SD",
+      mapel: "Seni dan Budaya",
       views: 1800,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -87,6 +104,8 @@ const VideoList = () => {
       id: 8,
       title: "Historic Landmarks",
       accountName: "History Buffs",
+      studi: "SMA",
+      mapel: "Sejarah",
       views: 2800,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -96,6 +115,8 @@ const VideoList = () => {
       id: 9,
       title: "Cozy Cabin Retreats",
       accountName: "Home Escape",
+      studi: "SMP",
+      mapel: "IPS",
       views: 1700,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -105,6 +126,8 @@ const VideoList = () => {
       id: 10,
       title: "Night Sky Marvels",
       accountName: "Stargazing Lovers",
+      studi: "SMA",
+      mapel: "Astronomi",
       views: 3200,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -114,6 +137,8 @@ const VideoList = () => {
       id: 11,
       title: "Rainforest Sounds",
       accountName: "Nature Harmony",
+      studi: "SD",
+      mapel: "IPA",
       views: 2100,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -123,6 +148,8 @@ const VideoList = () => {
       id: 12,
       title: "Desert Sunsets",
       accountName: "Golden Hour",
+      studi: "SMA",
+      mapel: "Geografi",
       views: 3400,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -132,6 +159,8 @@ const VideoList = () => {
       id: 13,
       title: "City Nightlife",
       accountName: "Urban Explorers",
+      studi: "SMP",
+      mapel: "IPS",
       views: 2900,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -141,6 +170,8 @@ const VideoList = () => {
       id: 14,
       title: "Winter Wonderland",
       accountName: "Snow Adventures",
+      studi: "SMP",
+      mapel: "Matematika",
       views: 2300,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -150,6 +181,8 @@ const VideoList = () => {
       id: 15,
       title: "Forest Trails",
       accountName: "Hiking Club",
+      studi: "SD",
+      mapel: "PJOK",
       views: 2400,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -159,6 +192,8 @@ const VideoList = () => {
       id: 16,
       title: "Clouds in Motion",
       accountName: "Time Lapse Art",
+      studi: "SMA",
+      mapel: "Seni dan Budaya",
       views: 3100,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -168,6 +203,8 @@ const VideoList = () => {
       id: 17,
       title: "Island Escapes",
       accountName: "Paradise Seekers",
+      studi: "SMP",
+      mapel: "Bahasa Inggris",
       views: 2600,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -177,6 +214,8 @@ const VideoList = () => {
       id: 18,
       title: "Hidden Waterfalls",
       accountName: "Nature Wonders",
+      studi: "SD",
+      mapel: "Matematika",
       views: 2800,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -186,6 +225,8 @@ const VideoList = () => {
       id: 19,
       title: "Starry Nights",
       accountName: "Cosmic Views",
+      studi: "SMP",
+      mapel: "Seni dan Budaya",
       views: 3300,
       imageUrl:
         "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
@@ -195,6 +236,8 @@ const VideoList = () => {
       id: 20,
       title: "Vintage Streets",
       accountName: "Retro Vibes",
+      studi: "SMA",
+      mapel: "Sejarah",
       views: 2700,
       imageUrl:
         "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
@@ -203,18 +246,34 @@ const VideoList = () => {
   ];
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredVideos, setFilteredVideos] = useState(videoData);
-
+  const [filteredVideos, setFilteredVideos] = useState(
+    videoData.filter(
+      (video) =>
+        (!studi || video.studi === studi) && (!mapel || video.mapel === mapel)
+    )
+  );
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const filtered = videoData.filter((video) =>
-      video.title.toLowerCase().includes(value.toLowerCase())
+    const filtered = videoData.filter(
+      (video) =>
+        video.title.toLowerCase().includes(value.toLowerCase()) &&
+        (!studi || video.studi === studi) &&
+        (!mapel || video.mapel === mapel)
     );
     setFilteredVideos(filtered);
   };
-
+  useEffect(() => {
+    // Update the filtered videos whenever the studi or mapel changes
+    const filtered = videoData.filter(
+      (video) =>
+        (!studi || video.studi === studi) && (!mapel || video.mapel === mapel)
+    );
+    setFilteredVideos(filtered);
+  }, [studi, mapel]);
   return (
     <div>
+      <h2>Studi: {studi}</h2>
+      <h3>Mapel: {mapel}</h3>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Search
           placeholder="Search video title"
@@ -226,48 +285,52 @@ const VideoList = () => {
         />
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-        {filteredVideos.map((video) => (
-          <Card
-            bordered={false}
-            key={video.id}
-            hoverable
-            style={{ width: 300, boxShadow: "none" }}
-            onClick={() => router.push("/video/" + video.id)}
-            // actions={actions}
-            cover={
-              <Image
-                onClick={() => router.push("/video/" + video.id)}
-                preview={{
-                  mask: (
-                    <span style={{ fontSize: 16, fontWeight: 600 }}>
-                      <PlayCircleFilled /> Tonton
-                    </span>
-                  ),
-                }}
-                alt={video.title}
-                src={video.imageUrl}
-                width={300}
-                height={160}
-                style={{ borderRadius: "10px" }}
-              />
-            }
-          >
-            <Meta
-              avatar={
-                <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+        {filteredVideos.length === 0 ? (
+          <div>No videos found for the selected criteria.</div>
+        ) : (
+          filteredVideos.map((video) => (
+            <Card
+              bordered={false}
+              key={video.id}
+              hoverable
+              style={{ width: 300, boxShadow: "none" }}
+              onClick={() => router.push("/video/" + video.id)}
+              actions={actions}
+              cover={
+                <Image
+                  onClick={() => router.push("/video/" + video.id)}
+                  preview={{
+                    mask: (
+                      <span style={{ fontSize: 16, fontWeight: 600 }}>
+                        <PlayCircleFilled /> Tonton
+                      </span>
+                    ),
+                  }}
+                  alt={video.title}
+                  src={video.imageUrl}
+                  width={300}
+                  height={160}
+                  style={{ borderRadius: "10px" }}
+                />
               }
-              title={video.title}
-              description={
-                <div>
-                  <div>{video.accountName}</div>
-                  <div style={{ fontSize: 12, color: "gray" }}>
-                    {video.views.toLocaleString()} views
+            >
+              <Meta
+                avatar={
+                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+                }
+                title={video.title}
+                description={
+                  <div>
+                    <div>{video.accountName}</div>
+                    <div style={{ fontSize: 12, color: "gray" }}>
+                      {video.views.toLocaleString()} views
+                    </div>
                   </div>
-                </div>
-              }
-            />
-          </Card>
-        ))}
+                }
+              />
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );

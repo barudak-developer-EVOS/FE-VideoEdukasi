@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme, Dropdown, Avatar } from "antd";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
+import VideoList from "@/components/templates/Dashboard";
 const { Header, Sider, Content } = Layout;
 
 const MENUS1 = [
@@ -18,35 +17,69 @@ const MENUS1 = [
     icon: <UserOutlined />,
     label: "STUDI",
     children: [
-      { key: "1-1", label: "SD" },
-      { key: "1-2", label: "SMP" },
-      { key: "1-3", label: "SMA" },
+      { key: "1", label: "SD" },
+      { key: "2", label: "SMP" },
+      { key: "3", label: "SMA" },
     ],
   },
 ];
 
 const MENUS2 = [
   {
-    key: "2",
+    key: "1",
     icon: <UserOutlined />,
-    label: "MAPEL",
+    label: "MAPEL SD",
     children: [
-      { key: "2-1", label: "MAPEL SD" },
-      { key: "2-2", label: "MAPEL SMP" },
-      { key: "2-3", label: "MAPEL SMA" },
+      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
+      { key: "2", label: "Pendidikan Pancasila dan Kewarganegaraan (PPKn)" },
+      { key: "3", label: "Bahasa Indonesia" },
+      { key: "4", label: "Matematika" },
+      { key: "5", label: "Ilmu Pengetahuan Alam dan Sosial (IPAS)" },
+      { key: "6", label: "Seni Budaya dan Prakarya (SBdP)" },
+      {
+        key: "7",
+        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+      },
     ],
   },
-];
-
-const MENUS3 = [
+  {
+    key: "2",
+    icon: <UserOutlined />,
+    label: "MAPEL SMP",
+    children: [
+      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
+      { key: "2", label: "Pendidikan Pancasila" },
+      { key: "3", label: "Bahasa Indonesia" },
+      { key: "4", label: "Matematika" },
+      { key: "5", label: "Ilmu Pengetahuan Alam (IPA)" },
+      { key: "6", label: "Ilmu Pengetahuan Sosial (IPS)" },
+      { key: "7", label: "Bahasa Inggris" },
+      {
+        key: "8",
+        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+      },
+      { key: "9", label: "Informatika" },
+      { key: "10", label: "Seni dan Prakarya" },
+    ],
+  },
   {
     key: "3",
     icon: <UserOutlined />,
-    label: "SUBMAPEL",
+    label: "MAPEL SMA",
     children: [
-      { key: "3-1", label: "SUBMAPEL SD" },
-      { key: "3-2", label: "SUBMAPEL SMP" },
-      { key: "3-3", label: "SUBMAPEL SMA" },
+      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
+      { key: "2", label: "Pendidikan Pancasila" },
+      { key: "3", label: "Bahasa Indonesia" },
+      { key: "4", label: "Matematika" },
+      { key: "5", label: "Ilmu Pengetahuan Alam (IPA)" },
+      { key: "6", label: "Ilmu Pengetahuan Sosial (IPS)" },
+      { key: "7", label: "Bahasa Inggris" },
+      {
+        key: "8",
+        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+      },
+      { key: "9", label: "Informatika" },
+      { key: "10", label: "Seni dan Prakarya" },
     ],
   },
 ];
@@ -55,6 +88,47 @@ interface Props {
   children: React.ReactNode;
 }
 const App: React.FC<Props> = ({ children }) => {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [selectedStudi, setSelectedStudi] = useState<string | null>(null);
+  const [selectedMapel, setSelectedMapel] = useState<string | null>(null);
+  const pathname = usePathname();
+  const getPageContent = () => {
+    switch (pathname) {
+      case "/manage": // Jika berada di halaman buat video
+        return <div>Buat Video</div>;
+      case "/": // Jika berada di halaman daftar video
+        return <VideoList studi={selectedStudi} mapel={selectedMapel} />;
+      default:
+        return "HAHAHAHHA";
+    }
+  };
+  const handleMenu1Click = ({ key }: { key: string }) => {
+    setSelectedKey(key);
+    // Menentukan label studi berdasarkan key yang dipilih
+    let studiLabel = "";
+    switch (key) {
+      case "1":
+        studiLabel = "SD";
+        break;
+      case "2":
+        studiLabel = "SMP";
+        break;
+      case "3":
+        studiLabel = "SMA";
+        break;
+      default:
+        studiLabel = "Unknown";
+    }
+    setSelectedStudi(studiLabel);
+  };
+
+  const handleMenu2Click = ({ key }: { key: string }) => {
+    // Mencari mata pelajaran berdasarkan key yang dipilih
+    const mapel = MENUS2.flatMap((menu) => menu.children || []).find(
+      (child) => child.key === key
+    )?.label;
+    setSelectedMapel(mapel || null); // Set mapel yang ditemukan atau null jika tidak ada
+  };
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,6 +163,7 @@ const App: React.FC<Props> = ({ children }) => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
+          onClick={handleMenu1Click}
           items={MENUS1.map((menu) => ({
             key: menu.key,
             icon: menu.icon,
@@ -99,34 +174,25 @@ const App: React.FC<Props> = ({ children }) => {
             })),
           }))}
         />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={MENUS2.map((menu) => ({
-            key: menu.key,
-            icon: menu.icon,
-            label: menu.label,
-            children: menu.children?.map((child) => ({
-              key: child.key,
-              label: child.label,
-            })),
-          }))}
-        />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={MENUS3.map((menu) => ({
-            key: menu.key,
-            icon: menu.icon,
-            label: menu.label,
-            children: menu.children?.map((child) => ({
-              key: child.key,
-              label: child.label,
-            })),
-          }))}
-        />
+        {selectedKey && (
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            items={MENUS2.filter((menu) => menu.key === selectedKey).map(
+              (menu) => ({
+                key: menu.key,
+                icon: menu.icon,
+                label: menu.label,
+                children: menu.children?.map((child) => ({
+                  key: child.key,
+                  label: child.label,
+                })),
+              })
+            )}
+            onClick={handleMenu2Click}
+          />
+        )}
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
@@ -175,7 +241,7 @@ const App: React.FC<Props> = ({ children }) => {
             borderRadius: borderRadiusLG,
           }}
         >
-          {children}
+          {getPageContent()}
         </Content>
       </Layout>
     </Layout>
