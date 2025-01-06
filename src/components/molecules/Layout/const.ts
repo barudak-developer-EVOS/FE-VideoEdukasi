@@ -1,10 +1,11 @@
 import { TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { createElement } from "react";
 
 export const MENUS = () => [
   {
     key: "sub1",
     label: "STUDI",
-    icon: UserOutlined,
+    icon: createElement(UserOutlined),
     children: [
       { key: "3", label: "SD" },
       { key: "4", label: "SMP" },
