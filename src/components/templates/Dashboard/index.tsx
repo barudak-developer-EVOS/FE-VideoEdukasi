@@ -1,279 +1,97 @@
 import React, { useState, useEffect } from "react";
-import { Card, Input, Avatar } from "antd";
+import { Card, Input, Avatar, Image } from "antd";
 import {
   PlayCircleFilled,
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { Image } from "antd";
 import { useRouter } from "next/router";
-
+import axios from "axios";
 const { Meta } = Card;
 const { Search } = Input;
+
 interface VideoListProps {
-  studi: string | null;
-  mapel: string | null;
+  video_education_level: string | null;
+  video_subject: string | null;
 }
-const VideoList: React.FC<VideoListProps> = ({ studi, mapel }) => {
-  console.log(studi);
+
+interface Video {
+  video_id: number;
+  video_title: string;
+  video_description: string;
+  video_url: string;
+  video_thumbnail: string;
+  account_id: number;
+  video_education_level: string;
+  video_subject: string;
+  likes: number;
+  dislikes: number;
+  views: number;
+
+  imageUrl: string;
+  videoUrl: string;
+}
+
+const VideoList: React.FC<VideoListProps> = ({
+  video_education_level,
+  video_subject,
+}) => {
   const router = useRouter();
   const actions: React.ReactNode[] = [
     <EditOutlined key="edit" />,
     <DeleteOutlined key="setting" />,
   ];
-  // Dummy data for videos
-  const videoData = [
-    {
-      id: 1,
-      title: "Europe Street Beat",
-      accountName: "Instagram Official",
-      studi: "SD",
-      mapel: "Bahasa Indonesia",
-      views: 1000,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=dqEktoQqx44",
-    },
-    {
-      id: 2,
-      title: "Ocean Waves Relaxation",
-      accountName: "Ocean Waves Channel",
-      studi: "SMP",
-      mapel: "IPA",
-      views: 2000,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 3,
-      title: "Mountain Adventures",
-      accountName: "Adventure Seekers",
-      studi: "SMA",
-      mapel: "Geografi",
-      views: 1500,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-    },
-    {
-      id: 4,
-      title: "Cityscape Views",
-      accountName: "City Lovers",
-      studi: "SMA",
-      mapel: "IPS",
-      views: 3000,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    },
-    {
-      id: 5,
-      title: "Wilderness Exploration",
-      accountName: "Nature Explorers",
-      studi: "SMP",
-      mapel: "IPA",
-      views: 2200,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=dqEktoQqx44",
-    },
-    {
-      id: 6,
-      title: "Underwater Wonders",
-      accountName: "Aquatic Life",
-      studi: "SD",
-      mapel: "IPA",
-      views: 2500,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 7,
-      title: "Sunset Serenity",
-      accountName: "Calm Vibes",
-      studi: "SD",
-      mapel: "Seni dan Budaya",
-      views: 1800,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-    },
-    {
-      id: 8,
-      title: "Historic Landmarks",
-      accountName: "History Buffs",
-      studi: "SMA",
-      mapel: "Sejarah",
-      views: 2800,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    },
-    {
-      id: 9,
-      title: "Cozy Cabin Retreats",
-      accountName: "Home Escape",
-      studi: "SMP",
-      mapel: "IPS",
-      views: 1700,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=dqEktoQqx44",
-    },
-    {
-      id: 10,
-      title: "Night Sky Marvels",
-      accountName: "Stargazing Lovers",
-      studi: "SMA",
-      mapel: "Astronomi",
-      views: 3200,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 11,
-      title: "Rainforest Sounds",
-      accountName: "Nature Harmony",
-      studi: "SD",
-      mapel: "IPA",
-      views: 2100,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-    },
-    {
-      id: 12,
-      title: "Desert Sunsets",
-      accountName: "Golden Hour",
-      studi: "SMA",
-      mapel: "Geografi",
-      views: 3400,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    },
-    {
-      id: 13,
-      title: "City Nightlife",
-      accountName: "Urban Explorers",
-      studi: "SMP",
-      mapel: "IPS",
-      views: 2900,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=dqEktoQqx44",
-    },
-    {
-      id: 14,
-      title: "Winter Wonderland",
-      accountName: "Snow Adventures",
-      studi: "SMP",
-      mapel: "Matematika",
-      views: 2300,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 15,
-      title: "Forest Trails",
-      accountName: "Hiking Club",
-      studi: "SD",
-      mapel: "PJOK",
-      views: 2400,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-    },
-    {
-      id: 16,
-      title: "Clouds in Motion",
-      accountName: "Time Lapse Art",
-      studi: "SMA",
-      mapel: "Seni dan Budaya",
-      views: 3100,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    },
-    {
-      id: 17,
-      title: "Island Escapes",
-      accountName: "Paradise Seekers",
-      studi: "SMP",
-      mapel: "Bahasa Inggris",
-      views: 2600,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=dqEktoQqx44",
-    },
-    {
-      id: 18,
-      title: "Hidden Waterfalls",
-      accountName: "Nature Wonders",
-      studi: "SD",
-      mapel: "Matematika",
-      views: 2800,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 19,
-      title: "Starry Nights",
-      accountName: "Cosmic Views",
-      studi: "SMP",
-      mapel: "Seni dan Budaya",
-      views: 3300,
-      imageUrl:
-        "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-      videoUrl: "https://www.youtube.com/watch?v=3JZ_D3ELwOQ",
-    },
-    {
-      id: 20,
-      title: "Vintage Streets",
-      accountName: "Retro Vibes",
-      studi: "SMA",
-      mapel: "Sejarah",
-      views: 2700,
-      imageUrl:
-        "https://i.pinimg.com/736x/c6/f6/21/c6f621e557d40dceaf794b60e960a67d.jpg",
-      videoUrl: "https://www.youtube.com/watch?v=9bZkp7q19f0",
-    },
-  ];
 
+  const [video, setVideo] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredVideos, setFilteredVideos] = useState(
-    videoData.filter(
-      (video) =>
-        (!studi || video.studi === studi) && (!mapel || video.mapel === mapel)
-    )
-  );
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
+
+  // Handle search functionality
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const filtered = videoData.filter(
+    const filtered = video.filter(
       (video) =>
-        video.title.toLowerCase().includes(value.toLowerCase()) &&
-        (!studi || video.studi === studi) &&
-        (!mapel || video.mapel === mapel)
+        video.video_title.toLowerCase().includes(value.toLowerCase()) &&
+        (!video_education_level ||
+          video.video_education_level === video_education_level) &&
+        (!video_subject || video.video_subject === video_subject)
     );
     setFilteredVideos(filtered);
   };
+
   useEffect(() => {
-    // Update the filtered videos whenever the studi or mapel changes
-    const filtered = videoData.filter(
+    // Fetch the video data from the API
+    axios
+      .get("http://localhost:3000/api/videos/getAll-videos")
+      .then((res) => {
+        const fetchedVideos = res.data;
+        setVideo(fetchedVideos);
+        setFilteredVideos(
+          fetchedVideos.filter(
+            (video: Video) =>
+              (!video_education_level ||
+                video.video_education_level === video_education_level) &&
+              (!video_subject || video.video_subject === video_subject)
+          )
+        );
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    // Filter the videos based on studi, mapel, and search term
+    const filtered = video.filter(
       (video) =>
-        (!studi || video.studi === studi) && (!mapel || video.mapel === mapel)
+        video.video_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (!video_education_level ||
+          video.video_education_level === video_education_level) &&
+        (!video_subject || video.video_subject === video_subject)
     );
     setFilteredVideos(filtered);
-  }, [studi, mapel]);
+  }, [video_education_level, video_subject, searchTerm]);
+
   return (
     <div>
-      <h2>Studi: {studi}</h2>
-      <h3>Mapel: {mapel}</h3>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Search
           placeholder="Search video title"
@@ -284,21 +102,28 @@ const VideoList: React.FC<VideoListProps> = ({ studi, mapel }) => {
           style={{ marginBottom: "20px", maxWidth: "800px" }}
         />
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
         {filteredVideos.length === 0 ? (
           <div>No videos found for the selected criteria.</div>
         ) : (
           filteredVideos.map((video) => (
             <Card
               bordered={false}
-              key={video.id}
+              key={video.video_id}
               hoverable
               style={{ width: 300, boxShadow: "none" }}
-              onClick={() => router.push("/video/" + video.id)}
+              onClick={() => router.push("/video/" + video.video_id)}
               actions={actions}
               cover={
                 <Image
-                  onClick={() => router.push("/video/" + video.id)}
+                  onClick={() => router.push("/video/" + video.video_id)}
                   preview={{
                     mask: (
                       <span style={{ fontSize: 16, fontWeight: 600 }}>
@@ -306,8 +131,8 @@ const VideoList: React.FC<VideoListProps> = ({ studi, mapel }) => {
                       </span>
                     ),
                   }}
-                  alt={video.title}
-                  src={video.imageUrl}
+                  alt={video.video_title}
+                  src={video.video_thumbnail}
                   width={300}
                   height={160}
                   style={{ borderRadius: "10px" }}
@@ -318,10 +143,10 @@ const VideoList: React.FC<VideoListProps> = ({ studi, mapel }) => {
                 avatar={
                   <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
                 }
-                title={video.title}
+                title={video.video_title}
                 description={
                   <div>
-                    <div>{video.accountName}</div>
+                    <div>accountName</div>
                     <div style={{ fontSize: 12, color: "gray" }}>
                       {video.views.toLocaleString()} views
                     </div>

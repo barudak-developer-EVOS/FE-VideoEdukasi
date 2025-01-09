@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Checkbox, Typography } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
+import axios from "axios";
 const { Title, Text } = Typography;
-
+interface Video {
+  video_thumbnail: string;
+  video_title: string;
+}
 const Login = () => {
   const router = useRouter();
-
+  const [video, setvideo] = useState<Video[]>([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/videos/getAll-videos")
+      .then((res) => {
+        setvideo(res.data); // Set video ke state
+      })
+      .catch((err) => console.log(err));
+  }, []);
   const onFinish = (values: any) => {
     console.log("Success:", values);
     router.push("/");
@@ -40,6 +51,20 @@ const Login = () => {
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
+        {video.map((video, index) => (
+          <div key={index} style={{ marginBottom: 16 }}>
+            <img
+              src={video.video_thumbnail}
+              width={400}
+              height={200}
+              alt=""
+              crossOrigin="anonymous"
+            />
+
+            <Text strong>{video.video_title}</Text>
+          </div>
+        ))}
+
         <div style={{ textAlign: "center", marginBottom: 24, marginTop: 16 }}>
           <Image src="/eduVidlogo.png" alt="icon" width={90} height={90} />
           <Title level={3}>Welcome to EduVid!</Title>

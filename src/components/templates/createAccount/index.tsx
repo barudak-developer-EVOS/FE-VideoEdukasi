@@ -10,10 +10,10 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-const existingUsers = [
-  { email: "student@example.com" },
-  { email: "tutor@example.com" },
-];
+// const existingUsers = [
+//   { email: "student@example.com" },
+//   { email: "tutor@example.com" },
+// ];
 
 const { Title } = Typography;
 
@@ -21,27 +21,27 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter(); // Pindahkan useRouter ke sini
 
-  const onFinish = (values: any) => {
-    setLoading(true);
-    // Periksa apakah email sudah digunakan
-    const userExists = existingUsers.some(
-      (user) => user.email === values.email
-    );
+  // const onFinish = (values: any) => {
+  //   setLoading(true);
+  // Periksa apakah email sudah digunakan
+  // const userExists = existingUsers.some(
+  //   (user) => user.email === values.email
+  // );
 
-    if (userExists) {
-      message.warning("Account already exists. Redirecting to login...");
-      setTimeout(() => {
-        router.push("/login"); // Redirect ke halaman login
-      }, 2000);
-    } else {
-      console.log("Success:", values);
-      message.success("Account created successfully!");
-      setTimeout(() => {
-        router.push("/"); // Redirect ke halaman utama
-      }, 2000);
-    }
-    setLoading(false);
-  };
+  //   if (userExists) {
+  //     message.warning("Account already exists. Redirecting to login...");
+  //     setTimeout(() => {
+  //       router.push("/login"); // Redirect ke halaman login
+  //     }, 2000);
+  //   } else {
+  //     console.log("Success:", values);
+  //     message.success("Account created successfully!");
+  //     setTimeout(() => {
+  //       router.push("/"); // Redirect ke halaman utama
+  //     }, 2000);
+  //   }
+  //   setLoading(false);
+  // };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -73,7 +73,7 @@ const Index = () => {
         </div>
         <Form
           name="createAccount"
-          onFinish={onFinish}
+          // onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
           layout="vertical"

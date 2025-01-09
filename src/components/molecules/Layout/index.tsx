@@ -97,7 +97,12 @@ const App: React.FC<Props> = ({ children }) => {
       case "/manage": // Jika berada di halaman buat video
         return <div>Buat Video</div>;
       case "/": // Jika berada di halaman daftar video
-        return <VideoList studi={selectedStudi} mapel={selectedMapel} />;
+        return (
+          <VideoList
+            video_education_level={selectedStudi}
+            video_subject={selectedMapel}
+          />
+        );
       default:
         return "HAHAHAHHA";
     }
