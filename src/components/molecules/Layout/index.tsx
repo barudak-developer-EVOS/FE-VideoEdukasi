@@ -30,15 +30,16 @@ const MENUS2 = [
     icon: <UserOutlined />,
     label: "MAPEL SD",
     children: [
-      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
-      { key: "2", label: "Pendidikan Pancasila dan Kewarganegaraan (PPKn)" },
+      { key: "1", label: "Agama" },
+      { key: "2", label: "Ppkn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
-      { key: "5", label: "Ilmu Pengetahuan Alam dan Sosial (IPAS)" },
-      { key: "6", label: "Seni Budaya dan Prakarya (SBdP)" },
+      { key: "5", label: "IPA" },
+      { key: "6", label: "IPS" },
+      { key: "7", label: "Seni dan Prakarya" },
       {
-        key: "7",
-        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+        key: "8",
+        label: "PJOK",
       },
     ],
   },
@@ -47,16 +48,16 @@ const MENUS2 = [
     icon: <UserOutlined />,
     label: "MAPEL SMP",
     children: [
-      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
-      { key: "2", label: "Pendidikan Pancasila" },
+      { key: "1", label: "Agama" },
+      { key: "2", label: "Ppkn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
-      { key: "5", label: "Ilmu Pengetahuan Alam (IPA)" },
-      { key: "6", label: "Ilmu Pengetahuan Sosial (IPS)" },
+      { key: "5", label: "IPA" },
+      { key: "6", label: "IPS" },
       { key: "7", label: "Bahasa Inggris" },
       {
         key: "8",
-        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+        label: "PJOK",
       },
       { key: "9", label: "Informatika" },
       { key: "10", label: "Seni dan Prakarya" },
@@ -67,16 +68,16 @@ const MENUS2 = [
     icon: <UserOutlined />,
     label: "MAPEL SMA",
     children: [
-      { key: "1", label: "Pendidikan Agama dan Budi Pekerti" },
-      { key: "2", label: "Pendidikan Pancasila" },
+      { key: "1", label: "Agama" },
+      { key: "2", label: "Ppkn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
-      { key: "5", label: "Ilmu Pengetahuan Alam (IPA)" },
-      { key: "6", label: "Ilmu Pengetahuan Sosial (IPS)" },
+      { key: "5", label: "IPA" },
+      { key: "6", label: "IPS" },
       { key: "7", label: "Bahasa Inggris" },
       {
         key: "8",
-        label: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)",
+        label: "PJOK",
       },
       { key: "9", label: "Informatika" },
       { key: "10", label: "Seni dan Prakarya" },
@@ -160,7 +161,7 @@ const App: React.FC<Props> = ({ children }) => {
 
   return (
     <Layout style={{ height: "100%", minHeight: "100vh" }}>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} width={200}>
         <div style={{ textAlign: "center", padding: "16px 0" }}>
           <Image src="/eduvidLogo.png" alt="Logo" width={80} height={80} />
         </div>

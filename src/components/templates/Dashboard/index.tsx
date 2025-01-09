@@ -27,9 +27,6 @@ interface Video {
   likes: number;
   dislikes: number;
   views: number;
-
-  imageUrl: string;
-  videoUrl: string;
 }
 
 const VideoList: React.FC<VideoListProps> = ({
@@ -37,11 +34,6 @@ const VideoList: React.FC<VideoListProps> = ({
   video_subject,
 }) => {
   const router = useRouter();
-  const actions: React.ReactNode[] = [
-    <EditOutlined key="edit" />,
-    <DeleteOutlined key="setting" />,
-  ];
-
   const [video, setVideo] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
@@ -59,8 +51,26 @@ const VideoList: React.FC<VideoListProps> = ({
     setFilteredVideos(filtered);
   };
 
+  // Function to update video views
+  const updateViewsAndRedirect = async (
+    videoId: number,
+    currentViews: number
+  ) => {
+    try {
+      await axios.patch(
+        `http://localhost:3000/api/videos/videos/${videoId}/view`,
+        {
+          views: currentViews + 1,
+        }
+      );
+      // Redirect to video detail page after updating views
+      router.push("/video/" + videoId);
+    } catch (error) {
+      console.error("Failed to update views:", error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch the video data from the API
     axios
       .get("http://localhost:3000/api/videos/getAll-videos")
       .then((res) => {
@@ -77,18 +87,6 @@ const VideoList: React.FC<VideoListProps> = ({
       })
       .catch((err) => console.log(err));
   }, [video_education_level, video_subject]);
-
-  useEffect(() => {
-    // Filter the videos based on studi, mapel, and search term
-    const filtered = video.filter(
-      (video) =>
-        video.video_title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (!video_education_level ||
-          video.video_education_level === video_education_level) &&
-        (!video_subject || video.video_subject === video_subject)
-    );
-    setFilteredVideos(filtered);
-  }, [video, video_education_level, video_subject, searchTerm]);
 
   return (
     <div>
@@ -119,11 +117,11 @@ const VideoList: React.FC<VideoListProps> = ({
               key={video.video_id}
               hoverable
               style={{ width: 300, boxShadow: "none" }}
-              onClick={() => router.push("/video/" + video.video_id)}
-              actions={actions}
+              onClick={() =>
+                updateViewsAndRedirect(video.video_id, video.views)
+              }
               cover={
                 <Image
-                  onClick={() => router.push("/video/" + video.video_id)}
                   preview={{
                     mask: (
                       <span style={{ fontSize: 16, fontWeight: 600 }}>
