@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Checkbox, Typography } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
+import axios from "axios";
 const { Title, Text } = Typography;
-
+interface Video {
+  video_thumbnail: string;
+  video_title: string;
+}
 const Login = () => {
   const router = useRouter();
-
+  const [video, setvideo] = useState<Video[]>([]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/videos/getAll-videos")
+      .then((res) => {
+        setvideo(res.data); // Set video ke state
+      })
+      .catch((err) => console.log(err));
+  }, []);
   const onFinish = (values: any) => {
     console.log("Success:", values);
     router.push("/");
