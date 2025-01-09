@@ -51,20 +51,6 @@ const Login = () => {
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         }}
       >
-        {video.map((video, index) => (
-          <div key={index} style={{ marginBottom: 16 }}>
-            <img
-              src={video.video_thumbnail}
-              width={400}
-              height={200}
-              alt=""
-              crossOrigin="anonymous"
-            />
-
-            <Text strong>{video.video_title}</Text>
-          </div>
-        ))}
-
         <div style={{ textAlign: "center", marginBottom: 24, marginTop: 16 }}>
           <Image src="/eduVidlogo.png" alt="icon" width={90} height={90} />
           <Title level={3}>Welcome to EduVid!</Title>

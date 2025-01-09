@@ -76,7 +76,7 @@ const VideoList: React.FC<VideoListProps> = ({
         );
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [video_education_level, video_subject]);
 
   useEffect(() => {
     // Filter the videos based on studi, mapel, and search term
@@ -88,7 +88,7 @@ const VideoList: React.FC<VideoListProps> = ({
         (!video_subject || video.video_subject === video_subject)
     );
     setFilteredVideos(filtered);
-  }, [video_education_level, video_subject, searchTerm]);
+  }, [video, video_education_level, video_subject, searchTerm]);
 
   return (
     <div>
