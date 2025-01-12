@@ -163,7 +163,19 @@ const App: React.FC<Props> = ({ children }) => {
     <Layout style={{ height: "100%", minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed} width={200}>
         <div style={{ textAlign: "center", padding: "16px 0" }}>
-          <Image src="/eduvidLogo.png" alt="Logo" width={80} height={80} />
+          <Image
+            src="/eduvidLogo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setSelectedKey(null);      
+              setSelectedStudi(null);    
+              setSelectedMapel(null);    
+              router.push("/");          
+            }}
+          />
         </div>
         <Menu
           theme="dark"
@@ -185,21 +197,20 @@ const App: React.FC<Props> = ({ children }) => {
             theme="dark"
             mode="inline"
             defaultSelectedKeys={["1"]}
-            items={MENUS2.filter((menu) => menu.key === selectedKey).map(
-              (menu) => ({
-                key: menu.key,
-                icon: menu.icon,
-                label: menu.label,
-                children: menu.children?.map((child) => ({
-                  key: child.key,
-                  label: child.label,
-                })),
-              })
-            )}
+            items={MENUS2.filter((menu) => menu.key === selectedKey).map((menu) => ({
+              key: menu.key,
+              icon: menu.icon,
+              label: menu.label,
+              children: menu.children?.map((child) => ({
+                key: child.key,
+                label: child.label,
+              })),
+            }))}
             onClick={handleMenu2Click}
           />
         )}
       </Sider>
+
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <div
