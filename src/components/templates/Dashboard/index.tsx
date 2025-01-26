@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Input, Avatar, Image } from "antd";
+import { Card, Input, Avatar, Image, message } from "antd";
 import {
   PlayCircleFilled,
   EditOutlined,
@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Cookies from "js-cookie";
 const { Meta } = Card;
 const { Search } = Input;
 
@@ -27,6 +28,10 @@ interface Video {
   likes: number;
   dislikes: number;
   views: number;
+  account: {
+    name: string;
+    profilePhoto: string;
+  };
 }
 
 const VideoList: React.FC<VideoListProps> = ({
@@ -37,6 +42,10 @@ const VideoList: React.FC<VideoListProps> = ({
   const [video, setVideo] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
+
+  // Get user role and user ID from cookies
+  const userRole = Cookies.get("userRole");
+  const userId = Cookies.get("userId");
 
   // Handle search functionality
   const handleSearch = (value: string) => {
@@ -74,19 +83,48 @@ const VideoList: React.FC<VideoListProps> = ({
     axios
       .get("http://localhost:3000/api/videos/getAll-videos")
       .then((res) => {
-        const fetchedVideos = res.data;
+        const fetchedVideos = res.data.data;
         setVideo(fetchedVideos);
-        setFilteredVideos(
-          fetchedVideos.filter(
-            (video: Video) =>
-              (!video_education_level ||
-                video.video_education_level === video_education_level) &&
-              (!video_subject || video.video_subject === video_subject)
-          )
+        const filtered = fetchedVideos.filter(
+          (video: Video) =>
+            (!video_education_level ||
+              video.video_education_level === video_education_level) &&
+            (!video_subject || video.video_subject === video_subject) &&
+            // Only show videos that belong to the current tutor (if user is a tutor)
+            (userRole !== "tutor" || video.account_id === Number(userId))
         );
+        setFilteredVideos(filtered);
       })
       .catch((err) => console.log(err));
-  }, [video_education_level, video_subject]);
+  }, [video_education_level, video_subject, userRole, userId]);
+
+  const handleEditVideo = (videoId: number) => {
+    router.push("/EditVideo/" + videoId);
+  };
+  const DeleteVideo = async (videoId: number) => {
+    const token = Cookies.get("token");
+    console.log(token);
+    if (!token) {
+      message.error("Unauthorized. Please log in.");
+      return;
+    }
+    try {
+      axios.delete(
+        `http://localhost:3000/api/videos/delete-videos/${videoId}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      message.success("Video Deleted successfully!");
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to Deleted video:", error);
+      message.error("Failed to Deleted video. Please try again.");
+    }
+  };
 
   return (
     <div>
@@ -117,8 +155,19 @@ const VideoList: React.FC<VideoListProps> = ({
               key={video.video_id}
               hoverable
               style={{ width: 300, boxShadow: "none" }}
-              onClick={() =>
-                updateViewsAndRedirect(video.video_id, video.views)
+              actions={
+                Cookies.get("userRole") === "tutor"
+                  ? [
+                      <EditOutlined
+                        key="edit"
+                        onClick={() => handleEditVideo(video.video_id)}
+                      />,
+                      <DeleteOutlined
+                        key="delete"
+                        onClick={() => DeleteVideo(video.video_id)}
+                      />,
+                    ]
+                  : undefined
               }
               cover={
                 <Image
@@ -134,17 +183,26 @@ const VideoList: React.FC<VideoListProps> = ({
                   width={300}
                   height={160}
                   style={{ borderRadius: "10px" }}
+                  onClick={() =>
+                    updateViewsAndRedirect(video.video_id, video.views)
+                  }
                 />
               }
             >
               <Meta
                 avatar={
-                  <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+                  <Avatar
+                    src={
+                      video.account.profilePhoto
+                        ? video.account.profilePhoto
+                        : "https://api.dicebear.com/7.x/miniavs/svg?seed=8"
+                    }
+                  />
                 }
                 title={video.video_title}
                 description={
                   <div>
-                    <div>accountName</div>
+                    <div>{video.account.name}</div>
                     <div style={{ fontSize: 12, color: "gray" }}>
                       {video.views.toLocaleString()} views
                     </div>

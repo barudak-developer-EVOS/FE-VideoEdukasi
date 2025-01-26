@@ -1,124 +1,114 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { Button, Form, Input, Upload, message } from "antd";
+import { ArrowLeftOutlined, UploadOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
 const UserSettings: React.FC = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    image: "", // Tambahkan properti untuk menyimpan URL atau nama file gambar
-  });
+  const [form] = Form.useForm();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Handle image upload and preview
+  const handleImageChange = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
+  const beforeUpload = (file: File) => {
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("You can only upload image files!");
+    } else {
+      handleImageChange(file);
     }
+    return false; // Prevent automatic upload
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-    alert("Settings saved successfully!");
+  // Handle form submission
+  const handleSubmit = (values: any) => {
+    console.log("Form Data:", values);
+    message.success("Settings saved successfully!");
   };
 
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-      {/* Tombol Back */}
-      <div style={{ marginBottom: "20px" }}>
-        <button
-          onClick={() => router.back()}
-          style={{
-            backgroundColor: "#0070f3",
-            color: "white",
-            padding: "10px 15px",
-            border: "none",
-            cursor: "pointer",
-            borderRadius: "5px",
-          }}
-        >
-          &larr; Back
-        </button>
-      </div>
+      {/* Back Button */}
+      <Button
+        icon={<ArrowLeftOutlined />}
+        onClick={() => router.back()}
+        style={{ marginBottom: "20px" }}
+      >
+        Back
+      </Button>
 
       <h1>User Settings</h1>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            style={{ width: "100%", padding: "8px", marginTop: "5px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Profile Image:</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ display: "block", marginTop: "5px" }}
-          />
-          {formData.image && (
-            <img
-              src={formData.image}
-              alt="Profile Preview"
-              style={{
-                width: "100px",
-                height: "100px",
-                objectFit: "cover",
-                marginTop: "10px",
-              }}
-            />
-          )}
-        </div>
-        <button
-          type="submit"
-          style={{
-            backgroundColor: "#0070f3",
-            color: "white",
-            padding: "10px",
-            border: "none",
-            cursor: "pointer",
-            width: "100%",
-          }}
+
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        initialValues={{
+          name: "",
+          email: "",
+          password: "",
+        }}
+      >
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter your name" }]}
         >
-          Save Settings
-        </button>
-      </form>
+          <Input placeholder="Enter your name" />
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: "Please enter your email" }]}
+        >
+          <Input type="email" placeholder="Enter your email" />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please enter your password" }]}
+        >
+          <Input.Password placeholder="Enter your password" />
+        </Form.Item>
+
+        <Form.Item label="Profile Image" valuePropName="fileList">
+          <Upload
+            accept="image/*"
+            beforeUpload={beforeUpload}
+            showUploadList={false}
+          >
+            <Button icon={<UploadOutlined />}>Upload Profile Image</Button>
+          </Upload>
+          {imagePreview && (
+            <div style={{ marginTop: "10px" }}>
+              <Image
+                src={imagePreview}
+                alt="Profile Preview"
+                width={100}
+                height={100}
+                style={{ borderRadius: "50%", objectFit: "cover" }}
+              />
+            </div>
+          )}
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            Save Settings
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

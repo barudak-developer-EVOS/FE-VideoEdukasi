@@ -1,35 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Checkbox, Typography } from "antd";
+import React, { useState } from "react";
+import { Form, Input, Button, Checkbox, Typography, message } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
-const { Title, Text } = Typography;
-interface Video {
-  video_thumbnail: string;
-  video_title: string;
-}
+import Cookies from "js-cookie";
+
+const { Title } = Typography;
+
 const Login = () => {
   const router = useRouter();
-  const [video, setvideo] = useState<Video[]>([]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/api/videos/getAll-videos")
-      .then((res) => {
-        setvideo(res.data); // Set video ke state
-      })
-      .catch((err) => console.log(err));
-  }, []);
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-    router.push("/");
+  const [loading, setLoading] = useState(false);
+
+  const onFinish = async (values: any) => {
+    setLoading(true); // Tampilkan loading saat proses login
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/accounts/auth/login",
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
+
+      const { token, id, accountName, email, role, profilePhoto } =
+        response.data;
+
+      // Simpan token ke cookies
+      Cookies.set("token", token, { expires: 7 }); // Cookie akan bertahan 7 hari
+      Cookies.set("userId", id.toString(), { expires: 7 }); // Simpan ID jika diperlukan
+      Cookies.set("userRole", role, { expires: 7 });
+      Cookies.set("profilePhoto", profilePhoto, { expires: 7 });
+
+      message.success("Login successful!");
+      router.push("/"); // Arahkan ke halaman utama
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // Sembunyikan loading
+    }
   };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
-  };
-
-  const handleSignUp = () => {
-    router.push("/signup"); // Arahkan ke halaman pendaftaran
+    message.error("Please check your input.");
   };
 
   return (
@@ -81,7 +94,7 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button type="primary" htmlType="submit" block loading={loading}>
               Log in
             </Button>
           </Form.Item>
