@@ -28,9 +28,9 @@ const MENUS1 = [
     icon: <UserOutlined />,
     label: "STUDI",
     children: [
-      { key: "1.2", label: "SD" },
-      { key: "2.2", label: "SMP" },
-      { key: "3.2", label: "SMA" },
+      { key: "1", label: "SD" },
+      { key: "2", label: "SMP" },
+      { key: "3", label: "SMA" },
     ],
   },
 ];
