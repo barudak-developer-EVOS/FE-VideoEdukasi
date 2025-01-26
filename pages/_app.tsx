@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       {withLayout ? (
         <>
-          <Layout>
+          <Layout id={pageProps.id}>
             <Component {...pageProps} />
           </Layout>
         </>
