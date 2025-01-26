@@ -15,18 +15,22 @@ import VideoContent from "@/components/templates/Video";
 import Manage from "@/components/templates/Manage";
 import EditVideo from "@/components/templates/Manage/edit";
 import UserSettings from "@/components/templates/Setting";
+import Link from "next/link";
+import type { MenuProps } from "antd";
 // import CreateAccount from "../../templates/CreateAccount/index";
 // import { Meera_Inimai } from "next/font/google";
 // import { on } from "events";
+// import { DownOutlined, SmileOutlined } from "@ant-design/icons";
+
 const MENUS1 = [
   {
     key: "1",
     icon: <UserOutlined />,
     label: "STUDI",
     children: [
-      { key: "1", label: "SD" },
-      { key: "2", label: "SMP" },
-      { key: "3", label: "SMA" },
+      { key: "1.2", label: "SD" },
+      { key: "2.2", label: "SMP" },
+      { key: "3.2", label: "SMA" },
     ],
   },
 ];
@@ -158,42 +162,6 @@ const App: React.FC<Props> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const account = Cookies.get("userId");
-  const menuItems = [
-    account && {
-      key: "1",
-      label: "Profile",
-      onClick: () => {
-        router.push(`/UserSetting/${Cookies.get("userId")}`);
-      },
-    },
-    !account && {
-      key: "2",
-      label: "Login",
-      onClick: () => {
-        router.push("/login");
-      },
-    },
-    {
-      key: "4",
-      label: "Signup",
-      onClick: () => {
-        router.push("/createAccount");
-      },
-    },
-    account && {
-      key: "3",
-      label: "Logout",
-      onClick: () => {
-        // Hapus semua cookies
-        Cookies.remove("token");
-        Cookies.remove("userId");
-        Cookies.remove("userRole");
-        Cookies.remove("profilePhoto");
-        // Redirect ke halaman login
-        router.push("/");
-      },
-    },
-  ];
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -206,6 +174,36 @@ const App: React.FC<Props> = ({ children }) => {
       message.error("Anda bukan Tutor,silahkan Login sebagai Tutor");
     }
   }
+
+  const handleLogout = () => {
+    // Remove user-related cookies
+    Cookies.remove("userId");
+    Cookies.remove("userRole");
+    Cookies.remove("profilePhoto");
+    Cookies.remove("token");
+    setProfilePhoto(null);
+    router.push("/"); // Redirect to home page after logout
+    message.success("You have logged out successfully");
+  };
+
+  const items = account
+    ? [
+        {
+          key: "3",
+          label: <Link href="/usersettings">Settings</Link>,
+        },
+        {
+          key: "2",
+          label: <span onClick={handleLogout}>Logout</span>,
+        },
+      ]
+    : [
+        {
+          key: "1",
+          label: <Link href="/login">Login</Link>,
+        },
+      ];
+
   useEffect(() => {
     // This ensures the code only runs on the client
     const profilePhoto = Cookies.get("profilePhoto");
@@ -278,7 +276,7 @@ const App: React.FC<Props> = ({ children }) => {
                 + Buat
               </Button>
               <Dropdown
-                menu={{ items: menuItems }}
+                overlay={<Menu items={items} />}
                 trigger={["click"]}
                 placement="bottomRight"
               >
@@ -288,7 +286,7 @@ const App: React.FC<Props> = ({ children }) => {
                   src={
                     profilePhoto ||
                     "https://api.dicebear.com/7.x/miniavs/svg?seed=8"
-                  } // Fallback if profilePhoto is null
+                  }
                 />
               </Dropdown>
             </div>
