@@ -15,7 +15,7 @@ import VideoContent from "@/components/templates/Video";
 import Manage from "@/components/templates/Manage";
 import EditVideo from "@/components/templates/Manage/edit";
 import UserSettings from "@/components/templates/Setting";
-import CreateAccount from "../../templates/CreateAccount/index";
+// import CreateAccount from "../../templates/CreateAccount/index";
 // import { Meera_Inimai } from "next/font/google";
 // import { on } from "events";
 const MENUS1 = [
@@ -114,8 +114,8 @@ const App: React.FC<Props> = ({ children }) => {
         return <EditVideo />;
       case "/manage": // Jika berada di halaman buat video
         return <Manage />;
-      case "/createAccount": // Jika berada di halaman buat video
-        return <CreateAccount />;
+      // case "/createAccount": // Jika berada di halaman buat video
+      //   return <CreateAccount />;
       case "/": // Jika berada di halaman daftar video
         return (
           <VideoList
