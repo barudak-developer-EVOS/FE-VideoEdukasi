@@ -1,54 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Upload, Button, Card, Select, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import axios from "axios";
 import Cookies from "js-cookie";
 const { TextArea } = Input;
 
 const VideoUploadForm = () => {
   const [form] = Form.useForm();
+  const router = useRouter();
+  const { id } = router.query; // Ambil ID dari URL
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState("");
   const [thumbnailPreview, setThumbnailPreview] = useState("");
 
+  useEffect(() => {
+    if (id) {
+      // Fetch data video berdasarkan ID
+      axios
+        .get(`http://localhost:3000/api/videos/get-videos/${id}`)
+        .then((response) => {
+          const videoData = response.data.data;
+          form.setFieldsValue({
+            video_title: videoData.video_title,
+            video_description: videoData.video_description,
+            video_education_level: videoData.video_education_level,
+            video_subject: videoData.video_subject,
+          });
+          setVideoPreview(videoData.video_url); // Preview video
+          setThumbnailPreview(videoData.video_thumbnail); // Preview thumbnail
+        })
+        .catch((error) => {
+          console.error("Failed to fetch video data:", error);
+          message.error("Failed to load video data.");
+        });
+    }
+  }, [id, form]);
+
   const handleFinish = async (values: any) => {
-    if (!videoFile || !thumbnailFile) {
-      message.error("Please upload both video and thumbnail!");
+    const token = Cookies.get("token");
+    if (!token) {
+      message.error("Unauthorized. Please log in.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("videoFile", videoFile);
-    formData.append("thumbnail", thumbnailFile);
     formData.append("title", values.video_title);
     formData.append("description", values.video_description || "");
     formData.append("educationLevel", values.video_education_level);
     formData.append("subject", values.video_subject);
-
-    const token = Cookies.get("token"); // Ambil token dari cookies
+    if (videoFile) formData.append("videoFile", videoFile);
+    if (thumbnailFile) formData.append("thumbnail", thumbnailFile);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/videos/upload-videos",
+      await axios.put(
+        `http://localhost:3000/api/videos/update-videos/${id}`,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`, // Kirim token di header Authorization
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      message.success("Video uploaded successfully!");
-      console.log("Response:", response.data);
-      form.resetFields();
-      setVideoPreview("");
-      setThumbnailPreview("");
-      setVideoFile(null);
-      setThumbnailFile(null);
+      message.success("Video updated successfully!");
+      router.push("/"); // Redirect ke halaman daftar video
     } catch (error) {
-      console.error(error);
+      console.error("Failed to update video:", error);
+      message.error("Failed to update video. Please try again.");
     }
   };
 
@@ -68,7 +89,7 @@ const VideoUploadForm = () => {
 
   return (
     <Card
-      title="Video Details"
+      title="Edit Video Details"
       bordered={false}
       style={{ maxWidth: 1200, margin: "auto" }}
     >
@@ -77,6 +98,8 @@ const VideoUploadForm = () => {
         layout="vertical"
         onFinish={handleFinish}
         initialValues={{
+          video_title: "",
+          video_description: "",
           video_education_level: "SD",
           video_subject: "PPKn",
         }}
@@ -84,11 +107,7 @@ const VideoUploadForm = () => {
         <div style={{ display: "flex", gap: "20px" }}>
           <div style={{ flex: 1 }}>
             {/* Video Upload */}
-            <Form.Item
-              name="video"
-              label="Upload Video"
-              rules={[{ required: true, message: "Please upload a video!" }]}
-            >
+            <Form.Item name="video" label="Upload Video">
               <Upload
                 accept="video/*"
                 beforeUpload={handleVideoPreview}
@@ -106,14 +125,7 @@ const VideoUploadForm = () => {
             )}
 
             {/* Thumbnail Upload */}
-            <Form.Item
-              name="video_thumbnail"
-              label="Upload Thumbnail"
-              rules={[
-                { required: true, message: "Please upload a thumbnail!" },
-              ]}
-              style={{ marginTop: 20 }}
-            >
+            <Form.Item name="video_thumbnail" label="Upload Thumbnail">
               <Upload
                 accept="image/*"
                 beforeUpload={handleThumbnailUpload}
@@ -150,11 +162,7 @@ const VideoUploadForm = () => {
             </Form.Item>
 
             {/* Description */}
-            <Form.Item
-              name="video_description"
-              label="Description"
-              rules={[{ required: false }]}
-            >
+            <Form.Item name="video_description" label="Description">
               <TextArea rows={4} placeholder="Describe your video" />
             </Form.Item>
 

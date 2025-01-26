@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme, Dropdown, Avatar } from "antd";
+import { Button, Layout, Menu, theme, Dropdown, Avatar, message } from "antd";
 import Image from "next/image";
-import { useRouter, usePathname } from "next/navigation";
-
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import VideoList from "@/components/templates/Dashboard";
 const { Header, Sider, Content } = Layout;
-
+import VideoContent from "@/components/templates/Video";
+import Manage from "@/components/templates/Manage";
+import EditVideo from "@/components/templates/Manage/edit";
+import UserSettings from "@/components/templates/Setting";
+import CreateAccount from "@/components/templates/CreateAccount";
+// import { Meera_Inimai } from "next/font/google";
+// import { on } from "events";
 const MENUS1 = [
   {
     key: "1",
@@ -87,16 +94,28 @@ const MENUS2 = [
 
 interface Props {
   children: React.ReactNode;
+  id: any;
 }
 const App: React.FC<Props> = ({ children }) => {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [selectedStudi, setSelectedStudi] = useState<string | null>(null);
   const [selectedMapel, setSelectedMapel] = useState<string | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+  const { id } = router.query;
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const getPageContent = () => {
     switch (pathname) {
+      case `/UserSetting/${id}`:
+        return <UserSettings />;
+      case `/video/${id}`:
+        return <VideoContent />;
+      case `/EditVideo/${id}`:
+        return <EditVideo />;
       case "/manage": // Jika berada di halaman buat video
-        return <div>Buat Video</div>;
+        return <Manage />;
+      case "/createAccount": // Jika berada di halaman buat video
+        return <CreateAccount />;
       case "/": // Jika berada di halaman daftar video
         return (
           <VideoList
@@ -105,7 +124,7 @@ const App: React.FC<Props> = ({ children }) => {
           />
         );
       default:
-        return "HAHAHAHHA";
+        return "Page not found";
     }
   };
   const handleMenu1Click = ({ key }: { key: string }) => {
@@ -135,22 +154,43 @@ const App: React.FC<Props> = ({ children }) => {
     )?.label;
     setSelectedMapel(mapel || null); // Set mapel yang ditemukan atau null jika tidak ada
   };
-  const router = useRouter();
+
   const [collapsed, setCollapsed] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const account = Cookies.get("userId");
   const menuItems = [
-    {
+    account && {
       key: "1",
       label: "Profile",
       onClick: () => {
-        router.push("/user-settings");
+        router.push(`/UserSetting/${Cookies.get("userId")}`);
+      },
+    },
+    !account && {
+      key: "2",
+      label: "Login",
+      onClick: () => {
+        router.push("/login");
       },
     },
     {
+      key: "4",
+      label: "Signup",
+      onClick: () => {
+        router.push("/createAccount");
+      },
+    },
+    account && {
       key: "3",
       label: "Logout",
       onClick: () => {
-        router.push("/login");
+        // Hapus semua cookies
+        Cookies.remove("token");
+        Cookies.remove("userId");
+        Cookies.remove("userRole");
+        Cookies.remove("profilePhoto");
+        // Redirect ke halaman login
+        router.push("/");
       },
     },
   ];
@@ -159,6 +199,18 @@ const App: React.FC<Props> = ({ children }) => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  function createVideo() {
+    if (Cookies.get("userRole") === "tutor") {
+      router.push("/manage");
+    } else {
+      message.error("Anda bukan Tutor,silahkan Login sebagai Tutor");
+    }
+  }
+  useEffect(() => {
+    // This ensures the code only runs on the client
+    const profilePhoto = Cookies.get("profilePhoto");
+    setProfilePhoto(profilePhoto === undefined ? null : profilePhoto);
+  }, []);
   return (
     <Layout style={{ height: "100%", minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed} width={200}>
@@ -221,7 +273,7 @@ const App: React.FC<Props> = ({ children }) => {
               <Button
                 type="primary"
                 style={{ marginRight: 16 }}
-                onClick={() => router.push("/manage")}
+                onClick={() => createVideo()}
               >
                 + Buat
               </Button>
@@ -233,7 +285,10 @@ const App: React.FC<Props> = ({ children }) => {
                 <Avatar
                   style={{ cursor: "pointer" }}
                   size="large"
-                  icon={<UserOutlined />}
+                  src={
+                    profilePhoto ||
+                    "https://api.dicebear.com/7.x/miniavs/svg?seed=8"
+                  } // Fallback if profilePhoto is null
                 />
               </Dropdown>
             </div>
