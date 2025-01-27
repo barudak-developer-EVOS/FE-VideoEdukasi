@@ -17,7 +17,7 @@ import EditVideo from "@/components/templates/Manage/edit";
 import UserSettings from "@/components/templates/Setting";
 import Link from "next/link";
 import type { MenuProps } from "antd";
-// import CreateAccount from "../../templates/CreateAccount/index";
+import CreateAccount from "@/components/templates/CreateAccount/index";
 // import { Meera_Inimai } from "next/font/google";
 // import { on } from "events";
 // import { DownOutlined, SmileOutlined } from "@ant-design/icons";
@@ -118,8 +118,8 @@ const App: React.FC<Props> = ({ children }) => {
         return <EditVideo />;
       case "/manage": // Jika berada di halaman buat video
         return <Manage />;
-      // case "/createAccount": // Jika berada di halaman buat video
-      //   return <CreateAccount />;
+      case "/createAccount": // Jika berada di halaman buat video
+        return <CreateAccount />;
       case "/": // Jika berada di halaman daftar video
         return (
           <VideoList
@@ -190,7 +190,15 @@ const App: React.FC<Props> = ({ children }) => {
     ? [
         {
           key: "3",
-          label: <Link href="/usersettings">Settings</Link>,
+          label: (
+            <span
+              onClick={() =>
+                router.push(`/UserSetting/${Cookies.get("userId")}`)
+              }
+            >
+              Settings
+            </span>
+          ),
         },
         {
           key: "2",
@@ -201,6 +209,10 @@ const App: React.FC<Props> = ({ children }) => {
         {
           key: "1",
           label: <Link href="/login">Login</Link>,
+        },
+        {
+          key: "4",
+          label: <Link href="/createAccount">Create</Link>,
         },
       ];
 

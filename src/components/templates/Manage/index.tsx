@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Upload, Button, Card, Select, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import axios from "axios";
 import Cookies from "js-cookie";
+
 const { TextArea } = Input;
 
 const VideoUploadForm = () => {
@@ -12,6 +13,13 @@ const VideoUploadForm = () => {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState("");
   const [thumbnailPreview, setThumbnailPreview] = useState("");
+
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Set default subject options for SD
+    handleEducationLevelChange("SD");
+  }, []); // Run only on mount (componentDidMount)
 
   const handleFinish = async (values: any) => {
     if (!videoFile || !thumbnailFile) {
@@ -66,6 +74,65 @@ const VideoUploadForm = () => {
     return false; // Prevent automatic upload
   };
 
+  // Fungsi untuk mengubah opsi subjek berdasarkan tingkat pendidikan
+  const handleEducationLevelChange = (level: string) => {
+    let subjects: string[] = [];
+
+    switch (level) {
+      case "SD":
+        subjects = [
+          "Agama",
+          "Ppkn",
+          "Bahasa Indonesia",
+          "Matematika",
+          "IPA",
+          "IPS",
+          "PJOK",
+        ];
+        break;
+      case "SMP":
+        subjects = [
+          "Agama",
+          "Ppkn",
+          "Bahasa Indonesia",
+          "Matematika",
+          "IPA",
+          "IPS",
+          "Bahasa Inggris",
+          "PJOK",
+          "Informatika",
+          "Seni dan Prakarya",
+        ];
+        break;
+      case "SMA":
+        subjects = [
+          "Agama",
+          "Ppkn",
+          "Bahasa Indonesia",
+          "Matematika",
+          "IPA",
+          "IPS",
+          "Bahasa Inggris",
+          "PJOK",
+          "Informatika",
+          "Seni dan Prakarya",
+        ];
+        break;
+      default:
+        subjects = [
+          "PPKn",
+          "Bahasa Indonesia",
+          "Matematika",
+          "IPA",
+          "IPS",
+          "Agama",
+          "PJOK",
+        ];
+        break;
+    }
+    setSubjectOptions(subjects);
+  };
+
   return (
     <Card
       title="Video Details"
@@ -77,8 +144,8 @@ const VideoUploadForm = () => {
         layout="vertical"
         onFinish={handleFinish}
         initialValues={{
-          video_education_level: "SD",
-          video_subject: "PPKn",
+          video_education_level: "SD", // Set default to SD
+          video_subject: "PPKn", // Default subject for SD
         }}
       >
         <div style={{ display: "flex", gap: "20px" }}>
@@ -169,7 +236,10 @@ const VideoUploadForm = () => {
                 },
               ]}
             >
-              <Select>
+              <Select
+                onChange={handleEducationLevelChange} // Handle change to adjust subjects
+                defaultValue="SD" // Set default education level to SD
+              >
                 <Select.Option value="SD">SD</Select.Option>
                 <Select.Option value="SMP">SMP</Select.Option>
                 <Select.Option value="SMA">SMA</Select.Option>
@@ -183,15 +253,11 @@ const VideoUploadForm = () => {
               rules={[{ required: true, message: "Please select a subject!" }]}
             >
               <Select>
-                <Select.Option value="PPKn">PPKn</Select.Option>
-                <Select.Option value="Bahasa Indonesia">
-                  Bahasa Indonesia
-                </Select.Option>
-                <Select.Option value="Matematika">Matematika</Select.Option>
-                <Select.Option value="IPA">IPA</Select.Option>
-                <Select.Option value="IPS">IPS</Select.Option>
-                <Select.Option value="Agama">Agama</Select.Option>
-                <Select.Option value="PJOK">PJOK</Select.Option>
+                {subjectOptions.map((subject) => (
+                  <Select.Option key={subject} value={subject}>
+                    {subject}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
 
