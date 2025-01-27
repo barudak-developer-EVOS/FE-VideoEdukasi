@@ -81,7 +81,7 @@ const VideoContent = () => {
     const token = Cookies.get("token"); // Ambil token dari cookies
     if (!token) {
       console.error("Token tidak ditemukan.");
-      return;
+      return message.error("Unauthorized. Please log in.");
     }
 
     try {

@@ -67,7 +67,7 @@ const VideoList: React.FC<VideoListProps> = ({
   ) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/videos/videos/${videoId}/view`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/videos/videos/${videoId}/view`,
         {
           views: currentViews + 1,
         }
@@ -81,7 +81,7 @@ const VideoList: React.FC<VideoListProps> = ({
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/videos/getAll-videos")
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/videos/getAll-videos`)
       .then((res) => {
         const fetchedVideos = res.data.data;
         setVideo(fetchedVideos);
@@ -110,7 +110,7 @@ const VideoList: React.FC<VideoListProps> = ({
     }
     try {
       axios.delete(
-        `http://localhost:3000/api/videos/delete-videos/${videoId}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/videos/delete-videos/${videoId}`,
         {
           headers: {
             "Content-Type": "multipart/form-data",
