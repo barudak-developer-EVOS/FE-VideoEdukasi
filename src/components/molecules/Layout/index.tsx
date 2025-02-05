@@ -225,7 +225,19 @@ const App: React.FC<Props> = ({ children }) => {
     <Layout style={{ height: "100%", minHeight: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed} width={200}>
         <div style={{ textAlign: "center", padding: "16px 0" }}>
-          <Image src="/eduvidLogo.png" alt="Logo" width={80} height={80} />
+          <Image
+            src="/eduvidLogo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setSelectedKey(null);
+              setSelectedStudi(null);
+              setSelectedMapel(null);
+              router.push("/");
+            }}
+          />
         </div>
         <Menu
           theme="dark"

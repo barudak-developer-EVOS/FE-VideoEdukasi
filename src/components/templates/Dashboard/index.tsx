@@ -76,6 +76,7 @@ const VideoList: React.FC<VideoListProps> = ({
       router.push("/video/" + videoId);
     } catch (error) {
       console.error("Failed to update views:", error);
+      router.push("/video/" + videoId);
     }
   };
 
@@ -90,12 +91,51 @@ const VideoList: React.FC<VideoListProps> = ({
             (!video_education_level ||
               video.video_education_level === video_education_level) &&
             (!video_subject || video.video_subject === video_subject) &&
-            // Only show videos that belong to the current tutor (if user is a tutor)
             (userRole !== "tutor" || video.account_id === Number(userId))
         );
         setFilteredVideos(filtered);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log("Failed to fetch videos, using dummy data", err);
+        const dummyVideos: Video[] = [
+          {
+            video_id: 28,
+            video_title: "Testing Video",
+            video_description: "This is a dummy testing video.",
+            video_url: "video.mp4",
+            video_thumbnail: "thumbnail.png",
+            account_id: 4,
+            video_education_level: "SMP",
+            video_subject: "Informatika",
+            likes: 9,
+            dislikes: 5,
+            views: 6,
+            account: {
+              name: "Dummy User",
+              profilePhoto: "logo.png",
+            },
+          },
+          {
+            video_id: 29,
+            video_title: "Sample Video",
+            video_description: "Another dummy video description.",
+            video_url: "video.mp4",
+            video_thumbnail: "thumbnail.png",
+            account_id: 4,
+            video_education_level: "SMA",
+            video_subject: "Informatika",
+            likes: 0,
+            dislikes: 0,
+            views: 1,
+            account: {
+              name: "Sample User",
+              profilePhoto: "logo.png",
+            },
+          },
+        ];
+        setVideo(dummyVideos);
+        setFilteredVideos(dummyVideos);
+      });
   }, [video_education_level, video_subject, userRole, userId]);
 
   const handleEditVideo = (videoId: number) => {
