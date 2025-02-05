@@ -137,9 +137,20 @@ const VideoContent = () => {
       const data = await response.json();
       console.log("Komentar berhasil dikirim:", data);
 
-      // Reset komentar setelah berhasil mengirim
+      // Tambahkan komentar baru ke dalam state
+      setComments((prevComments) => [
+        {
+          comment_content: comment, // Isi komentar dari input
+          account_name: "You", // Gantilah ini dengan nama akun pengguna yang sedang login
+          account_profile_photo:
+            `${Cookies.get("profilePhoto")}` ||
+            "https://api.dicebear.com/7.x/miniavs/svg?seed=9", // Gantilah dengan foto profil pengguna yang sedang login
+        },
+        ...prevComments, // Tambahkan komentar lama setelahnya
+      ]);
+
+      // Reset input komentar
       setComment("");
-      alert("Komentar berhasil dikirim!");
     } catch (error) {
       console.error("Error saat mengirim komentar:", error);
       alert("Gagal mengirim komentar. Silakan coba lagi.");
