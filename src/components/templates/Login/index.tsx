@@ -35,6 +35,7 @@ const Login = () => {
       router.push("/"); // Arahkan ke halaman utama
     } catch (error) {
       console.error(error);
+      message.error("Login failed. Please check your credentials.");
     } finally {
       setLoading(false); // Sembunyikan loading
     }

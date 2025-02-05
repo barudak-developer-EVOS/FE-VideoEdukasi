@@ -57,6 +57,7 @@ const VideoUploadForm = () => {
       setThumbnailFile(null);
     } catch (error) {
       console.error(error);
+      message.error("Failed to upload video.");
     }
   };
 
