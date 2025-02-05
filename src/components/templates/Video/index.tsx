@@ -63,6 +63,22 @@ const VideoContent = () => {
           setVideoData(data);
         })
         .catch((error) => console.error("Error fetching video data:", error));
+      setVideoData({
+        data: {
+          id: "1",
+          video_title: "Video Title",
+          video_description: "Video Description",
+          uploader: "Uploader Name",
+          video_url: "/video.mp4",
+          likes: 0,
+          dislikes: 0,
+          comments: [],
+          account: {
+            name: "Account Name",
+            profilePhoto: "/logo.png",
+          },
+        },
+      });
 
       // Fetch komentar untuk video
       fetch(`http://localhost:3000/api/comments/get-comments/video/${id}`)
@@ -74,6 +90,20 @@ const VideoContent = () => {
           }
         })
         .catch((error) => console.error("Error fetching comments:", error));
+      setComments([
+        {
+          comment_content: "ddd",
+          account_name: "sssssss",
+          account_profile_photo:
+            "http://localhost:3000/uploads/profile_photos/1738744511109-217787990-Picture 1.png",
+        },
+        {
+          comment_content: "yeahh",
+          account_name: "murid1",
+          account_profile_photo:
+            "http://localhost:3000/uploads/profile_photos/1737989878755-170032112-WhatsApp Image 2025-01-24 at 14.17.27_0012b910.jpg",
+        },
+      ]);
     }
   }, [id]);
 
@@ -175,6 +205,18 @@ const VideoContent = () => {
       console.error("Error disliking video:", error);
     }
   };
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Share Video",
+          text: "Check out this video!",
+          url: window.location.href,
+        })
+        .then(() => console.log("Video shared successfully"))
+        .catch((error) => console.error("Error sharing video:", error));
+    }
+  };
 
   if (!videoData) {
     return <div>Loading...</div>;
@@ -237,7 +279,11 @@ const VideoContent = () => {
               onClick={handleDislike}
             />
             <span>{videoData.data.dislikes}</span>
-            <Button icon={<ShareAltOutlined />} shape="circle" />
+            <Button
+              icon={<ShareAltOutlined />}
+              onClick={handleShare}
+              shape="circle"
+            />
           </Space>
         </Space>
       </Card>

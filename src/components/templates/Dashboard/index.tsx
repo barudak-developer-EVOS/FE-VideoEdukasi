@@ -76,6 +76,7 @@ const VideoList: React.FC<VideoListProps> = ({
       router.push("/video/" + videoId);
     } catch (error) {
       console.error("Failed to update views:", error);
+      router.push("/video/" + videoId);
     }
   };
 
