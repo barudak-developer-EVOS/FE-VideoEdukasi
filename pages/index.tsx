@@ -1,13 +1,12 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import dynamic from "next/dynamic";
 
-import styles from '../styles/Home.module.css'
-
-
-export default function Home() {
-  return (
-    <>
-      <h1>Hello world</h1>
-    </>
-  )
-}
+const Component = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "login-page" */ "../src/components/templates/Dashboard/index"
+    ),
+  {
+    ssr: false,
+  }
+);
+export default Component;
