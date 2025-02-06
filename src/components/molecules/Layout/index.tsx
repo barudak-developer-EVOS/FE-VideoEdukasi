@@ -42,7 +42,7 @@ const MENUS2 = [
     label: "MAPEL SD",
     children: [
       { key: "1", label: "Agama" },
-      { key: "2", label: "Ppkn" },
+      { key: "2", label: "PPKn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
       { key: "5", label: "IPA" },
@@ -60,7 +60,7 @@ const MENUS2 = [
     label: "MAPEL SMP",
     children: [
       { key: "1", label: "Agama" },
-      { key: "2", label: "Ppkn" },
+      { key: "2", label: "PPKn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
       { key: "5", label: "IPA" },
@@ -80,7 +80,7 @@ const MENUS2 = [
     label: "MAPEL SMA",
     children: [
       { key: "1", label: "Agama" },
-      { key: "2", label: "Ppkn" },
+      { key: "2", label: "PPKn" },
       { key: "3", label: "Bahasa Indonesia" },
       { key: "4", label: "Matematika" },
       { key: "5", label: "IPA" },

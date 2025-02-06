@@ -54,57 +54,73 @@ const VideoContent = () => {
   const [isDisliked, setIsDisliked] = useState<boolean>(false); // Status tombol dislike
 
   useEffect(() => {
-    if (id) {
-      // Fetch data video menggunakan ID
-      fetch(`http://localhost:3000/api/videos/get-videos/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Video data:", data);
-          setVideoData(data);
-        })
-        .catch((error) => console.error("Error fetching video data:", error));
-      setVideoData({
-        data: {
-          id: "1",
-          video_title: "Video Title",
-          video_description: "Video Description",
-          uploader: "Uploader Name",
-          video_url: "/video.mp4",
-          likes: 0,
-          dislikes: 0,
-          comments: [],
-          account: {
-            name: "Account Name",
-            profilePhoto: "/logo.png",
-          },
-        },
-      });
+    const fetchData = async () => {
+      if (!id) return;
 
-      // Fetch komentar untuk video
-      fetch(`http://localhost:3000/api/comments/get-comments/video/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Comments data:", data);
-          if (data.data && Array.isArray(data.data.comments)) {
-            setComments(data.data.comments);
-          }
-        })
-        .catch((error) => console.error("Error fetching comments:", error));
-      setComments([
-        {
-          comment_content: "ddd",
-          account_name: "sssssss",
-          account_profile_photo:
-            "http://localhost:3000/uploads/profile_photos/1738744511109-217787990-Picture 1.png",
-        },
-        {
-          comment_content: "yeahh",
-          account_name: "murid1",
-          account_profile_photo:
-            "http://localhost:3000/uploads/profile_photos/1737989878755-170032112-WhatsApp Image 2025-01-24 at 14.17.27_0012b910.jpg",
-        },
-      ]);
-    }
+      try {
+        // Fetch data video
+        const videoResponse = await axios.get(
+          `http://localhost:3000/api/videos/get-videos/${id}`
+        );
+        console.log("Video data:", videoResponse.data);
+        setVideoData(videoResponse.data);
+      } catch (error) {
+        console.error("Error fetching video data:", error);
+        setVideoData({
+          data: {
+            id: "1",
+            video_title: "Video Title",
+            video_description: "Video Description",
+            uploader: "Uploader Name",
+            video_url: "/video.mp4",
+            likes: 0,
+            dislikes: 0,
+            comments: [],
+            account: {
+              name: "Account Name",
+              profilePhoto: "/logo.png",
+            },
+          },
+        });
+      }
+
+      // Data dummy jika request gagal atau masih loading
+
+      try {
+        // Fetch komentar untuk video
+        const commentsResponse = await axios.get(
+          `http://localhost:3000/api/comments/get-comments/video/${id}`
+        );
+        console.log("Comments data:", commentsResponse.data);
+
+        if (
+          commentsResponse.data.data &&
+          Array.isArray(commentsResponse.data.data.comments)
+        ) {
+          setComments(commentsResponse.data.data.comments);
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+        setComments([
+          {
+            comment_content: "ddd",
+            account_name: "sssssss",
+            account_profile_photo:
+              "http://localhost:3000/uploads/profile_photos/1738744511109-217787990-Picture 1.png",
+          },
+          {
+            comment_content: "yeahh",
+            account_name: "murid1",
+            account_profile_photo:
+              "http://localhost:3000/uploads/profile_photos/1737989878755-170032112-WhatsApp Image 2025-01-24 at 14.17.27_0012b910.jpg",
+          },
+        ]);
+      }
+
+      // Data dummy jika request gagal atau masih loading
+    };
+
+    fetchData();
   }, [id]);
 
   const handleSendComment = async () => {
